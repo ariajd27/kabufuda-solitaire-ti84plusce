@@ -1,0 +1,14 @@
+Version 1.1.1:
+ - fixed several bugs with cursor navigation
+
+Version 1.1.0:
+ - added persistent win counter
+ - changed background color
+
+Version 1.0.2:
+ - fixed cursor starting in DROP mode on game restart
+ - added basic information on assembly programs to README
+
+Version 1.0.1: 2024-02-20
+ - changed cursor behavior when navigating between tableau stacks in SELECT mode
+ - fixed game not actually restarting when ENTER pressed at game end
