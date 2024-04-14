@@ -38,19 +38,7 @@
 #define SELCARD_DISP_Y 9
 #define NUMWINS_DISP_X (GFX_LCD_WIDTH - 5 - 3 * TEXT_CHAR_WIDTH)
 
-gfx_sprite_t* cardSprite[] = { 
-	card1,
-	card2,
-	card3,
-	card4,
-	card5,
-	card6,
-	card7,
-	card8,
-	card9,
-	card10,
-	cardstack
-};
+gfx_sprite_t* cardSprite[11];
 
 unsigned char tableau[NUM_TABLSLOTS][TABL_STACK_SIZE];
 unsigned char freeCells[NUM_FREECELLS];
@@ -273,7 +261,7 @@ void maxCursorIndex()
 	if (cursorStack < NUM_FREECELLS) return;
 
 	cursorIndex = TABL_STACK_SIZE - 1;
-	while (tableau[NUM_TABLSLOTS - 1][cursorIndex] == 11 && cursorIndex > 0) cursorIndex--;
+	while (tableau[cursorStack - NUM_FREECELLS][cursorIndex] == 11 && cursorIndex > 0) cursorIndex--;
 }
 
 bool cursorOnCollapsed()
@@ -320,7 +308,7 @@ bool doInput()
 
 	if (down && (prevDown == 0 || prevDown > HOLD_TIME)) 
 	{
-		if (tableau[cursorStack - NUM_FREECELLS][cursorIndex + 1] != 11) cursorIndex++;
+		cursorIndex++;
 	}
 	else if (left && (prevLeft == 0 || prevLeft > HOLD_TIME))
 	{
@@ -342,7 +330,7 @@ bool doInput()
 	}
 	else if (up && (prevUp == 0 || prevUp > HOLD_TIME))
 	{
-		if (cursorIndex > 0 && cursorMode == SELECT) cursorIndex--;
+		if (cursorIndex > 0) cursorIndex--;
 	}
 
 	prevDown = down ? prevDown + 1 : 0;
@@ -354,12 +342,16 @@ bool doInput()
 	{
 		cursorIndex = 0;
 	}
+	else if (cursorMode == DROP)
+	{
+		maxCursorIndex();
+		if (cursorIndex > 0) cursorIndex++;
+	}
 	else if (cursorStack != prevCursorStack)
 	{
 		maxCursorIndex();
-		if (cursorMode == SELECT) cursorIndex++;
 	}
-	else if (cursorMode == SELECT)
+	else
 	{
 		while (tableau[cursorStack - NUM_FREECELLS][cursorIndex] == 11 && cursorIndex > 0) cursorIndex--;
 	}
@@ -430,9 +422,23 @@ bool run()
 
 int main(void)
 {
+	KBFDGFX_init();
+
+	cardSprite[0] = card1;
+	cardSprite[1] = card2;
+	cardSprite[2] = card3;
+	cardSprite[3] = card4;
+	cardSprite[4] = card5;
+	cardSprite[5] = card6;
+	cardSprite[6] = card7;
+	cardSprite[7] = card8;
+	cardSprite[8] = card9;
+	cardSprite[9] = card10;
+	cardSprite[10] = cardstack;
+
 	gfx_Begin();
 	gfx_SetDrawBuffer();
-	gfx_SetPalette(&global_palette, sizeof_global_palette, 0);
+	gfx_SetPalette(global_palette, sizeof_global_palette, 0);
 	gfx_SetTransparentColor(3);
 
 	kb_EnableOnLatch();

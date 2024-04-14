@@ -1,3 +1,6 @@
+Version 1.1.2:
+ - switched to an uncompressed program and archived graphics
+
 Version 1.1.1:
  - fixed several bugs with cursor navigation
 

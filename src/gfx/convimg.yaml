@@ -28,8 +28,11 @@ converts:
       - drpcorner.png
 
 outputs:
-  - type: c
+  - type: appvar
+    name: "KBFDGFX"
     include-file: gfx.h
+    source-format: c
+    archived: true
     palettes:
       - global_palette
     converts:
