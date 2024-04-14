@@ -52,8 +52,7 @@ unsigned char selectedQty;
 unsigned char orgStack;
 unsigned char orgIndex;
 
-bool enter, prevEnter, down, left, right, up;
-unsigned char prevDown, prevLeft, prevRight, prevUp;
+unsigned char down, left, right, up;
 
 unsigned char progress;
 unsigned char numWins;
@@ -277,11 +276,17 @@ bool cursorOnLocked()
 
 bool doInput()
 {
+	const bool prevSecond = kb_IsDown(kb_Key2nd);
+	const bool prevAlpha = kb_IsDown(kb_KeyAlpha);
+
 	kb_Scan();
 
-	enter = kb_Data[6] == kb_Enter;
+	up = kb_IsDown(kb_KeyUp) ? up + 1 : 0;
+	down = kb_IsDown(kb_KeyDown) ? down + 1 : 0;
+	left = kb_IsDown(kb_KeyLeft) ? left + 1 : 0;
+	right = kb_IsDown(kb_KeyRight) ? right + 1 : 0;
 
-	if (enter && !prevEnter)
+	if (kb_IsDown(kb_Key2nd) && !prevSecond)
 	{
 		if (cursorMode == SELECT && canGrabCard())
 		{
@@ -295,22 +300,15 @@ bool doInput()
 			cursorMode = SELECT;
 		}
 	}
-	else if (kb_Data[6] == kb_Clear) cursorMode = SELECT;
-
-	prevEnter = enter;
-
-	down = kb_Data[7] == kb_Down;
-	left = kb_Data[7] == kb_Left;
-	right = kb_Data[7] == kb_Right;
-	up = kb_Data[7] == kb_Up;
+	else if (kb_IsDown(kb_KeyAlpha) && !prevAlpha) cursorMode = SELECT;
 
 	unsigned char prevCursorStack = cursorStack;
 
-	if (down && (prevDown == 0 || prevDown > HOLD_TIME)) 
+	if (down == 1 || down > HOLD_TIME)
 	{
 		cursorIndex++;
 	}
-	else if (left && (prevLeft == 0 || prevLeft > HOLD_TIME))
+	else if (left == 1 || left > HOLD_TIME)
 	{
 		do
 		{
@@ -319,7 +317,7 @@ bool doInput()
 		}
 		while (cursorOnCollapsed() || cursorOnLocked()); // skip useless stacks
 	}
-	else if (right && (prevRight == 0 || prevRight > HOLD_TIME))
+	else if (right == 1 || right > HOLD_TIME)
 	{
 		do
 		{
@@ -328,15 +326,10 @@ bool doInput()
 		}
 		while (cursorOnCollapsed() || cursorOnLocked()); // skip useless stacks
 	}
-	else if (up && (prevUp == 0 || prevUp > HOLD_TIME))
+	else if (up == 1 || up > HOLD_TIME)
 	{
 		if (cursorIndex > 0) cursorIndex--;
 	}
-
-	prevDown = down ? prevDown + 1 : 0;
-	prevLeft = left ? prevLeft + 1 : 0;
-	prevRight = right ? prevRight + 1 : 0;
-	prevUp = up ? prevUp + 1 : 0;
 
 	if (cursorStack < NUM_FREECELLS)
 	{
@@ -374,17 +367,11 @@ bool doInput()
 		}
 	}
 
-	return (!kb_On) && (progress < 10);
+	return (!kb_IsDown(kb_KeyClear)) && (progress < 10);
 }
 
 bool run()
 {
-	prevEnter = false;
-	prevDown = 0;
-	prevLeft = 0;
-	prevRight = 0;
-	prevUp = 0;
-
 	start();
 
 	while (doInput())
@@ -396,27 +383,20 @@ bool run()
 		while (clock() - frameTimer < FRAME_TIME);
 	}
 
-	unsigned char const saveHandle = ti_Open(SAVE_VAR_NAME, "w");
-	ti_Write(&numWins, 1, 1, saveHandle);
-	ti_Close(saveHandle);
-
-	prevEnter = true;
-
-	while (true)
+	if (progress == 10)
 	{
-		kb_Scan();
+		unsigned char const saveHandle = ti_Open(SAVE_VAR_NAME, "w");
+		ti_Write(&numWins, 1, 1, saveHandle);
+		ti_Close(saveHandle);
 
-		if (kb_On)
+		while (kb_AnyKey());
+
+		while (true)
 		{
-			kb_ClearOnLatch();
-			return false;
+			kb_Scan();
+			if (kb_IsDown(kb_KeyClear)) return false;
+			if (kb_IsDown(kb_Key2nd)) return true;
 		}
-	
-		enter = kb_Data[6] == kb_Enter;
-	
-		if (enter && !prevEnter) return true;
-
-		prevEnter = enter;
 	}
 }
 

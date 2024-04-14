@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#define sizeof_global_palette 16
+#define sizeof_global_palette 14
 #define global_palette (KBFDGFX_appvar[0])
 #define sprites_palette_offset 0
 #define card1_width 25
