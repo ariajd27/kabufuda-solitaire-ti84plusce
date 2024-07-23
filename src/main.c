@@ -277,7 +277,9 @@ bool cursorOnLocked()
 bool doInput()
 {
 	const bool prevSecond = kb_IsDown(kb_Key2nd);
+	const bool prevEnter = kb_IsDown(kb_KeyEnter);
 	const bool prevAlpha = kb_IsDown(kb_KeyAlpha);
+	const bool prevClear = kb_IsDown(kb_KeyClear);
 
 	kb_Scan();
 
@@ -286,7 +288,10 @@ bool doInput()
 	left = kb_IsDown(kb_KeyLeft) ? left + 1 : 0;
 	right = kb_IsDown(kb_KeyRight) ? right + 1 : 0;
 
-	if (kb_IsDown(kb_Key2nd) && !prevSecond)
+	const bool select = (kb_IsDown(kb_Key2nd) && !prevSecond) || (kb_IsDown(kb_KeyEnter) && !prevEnter);
+	const bool clear = (kb_IsDown(kb_KeyClear) && !prevClear) || (kb_IsDown(kb_KeyAlpha) && !prevAlpha);
+
+	if (select)
 	{
 		if (cursorMode == SELECT && canGrabCard())
 		{
@@ -294,13 +299,17 @@ bool doInput()
 			orgIndex = cursorIndex;
 			cursorMode = DROP;
 		}
-		else if (cursorMode == DROP && canDropCard())
+		else if (canDropCard())
 		{
 			dropCard();
 			cursorMode = SELECT;
 		}
+		else if (cursorStack == orgStack)
+		{
+			cursorMode = SELECT;
+		}
 	}
-	else if (kb_IsDown(kb_KeyAlpha) && !prevAlpha) cursorMode = SELECT;
+	else if (clear) cursorMode = SELECT;
 
 	unsigned char prevCursorStack = cursorStack;
 
@@ -337,8 +346,22 @@ bool doInput()
 	}
 	else if (cursorMode == DROP)
 	{
-		maxCursorIndex();
-		if (cursorIndex > 0) cursorIndex++;
+		// if dropping cards, the cursor should always be at the top of the stack it's on
+		// except maxCursorIndex() doesn't work so well on empty tableau stacks
+		if (cursorStack != orgStack)
+		{
+			if (tableau[cursorStack - NUM_FREECELLS][0] == 11)
+			{
+				cursorIndex = 0;
+			}
+			else
+			{
+				maxCursorIndex();
+				cursorIndex++;
+			}
+		}
+		else cursorIndex = orgIndex; // also this makes it more clear if we are trying to drop
+									 // back on the original cards
 	}
 	else if (cursorStack != prevCursorStack)
 	{
@@ -367,7 +390,7 @@ bool doInput()
 		}
 	}
 
-	return (!kb_IsDown(kb_KeyClear)) && (progress < 10);
+	return (!kb_On) && (progress < 10);
 }
 
 bool run()
@@ -394,7 +417,7 @@ bool run()
 		while (true)
 		{
 			kb_Scan();
-			if (kb_IsDown(kb_KeyClear)) return false;
+			if (kb_On) return false;
 			if (kb_IsDown(kb_Key2nd)) return true;
 		}
 	}
@@ -426,6 +449,8 @@ int main(void)
 	while (run());
 
 	gfx_End();
+
+	kb_ClearOnLatch();
 
 	return 0;
 }
