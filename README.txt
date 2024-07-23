@@ -15,6 +15,7 @@ Collapse all the cards into ten stacks to win! Victory is indicated by text at t
 arrow keys to move the cursor
 2ND or ENTER to select cards to be moved, or once selected, to move those cards to the cursor position
 ALPHA or CLEAR to abandon placement
+DEL at any time to restart the game
 ON at any time to exit the program
 
 Stacks wrap around -- to get to the free cells, go further left than the leftmost tableau stack, or further right than the rightmost.

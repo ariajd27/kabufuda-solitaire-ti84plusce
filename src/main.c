@@ -88,9 +88,10 @@ bool run()
 		{
 			kb_Scan();
 			if (kb_On) return false;
-			if (kb_IsDown(kb_Key2nd)) return true;
+			if (kb_IsDown(kb_Key2nd) || kb_IsDown(kb_KeyEnter)) return true;
 		}
 	}
+	else return !kb_On;
 }
 
 int main(void)
@@ -115,6 +116,7 @@ int main(void)
 	gfx_SetTransparentColor(3);
 
 	kb_EnableOnLatch();
+	kb_ClearOnLatch();
 
 	while (run());
 

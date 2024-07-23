@@ -123,5 +123,5 @@ bool doInput()
 		}
 	}
 
-	return (!kb_On) && (progress < 10);
+	return !kb_IsDown(kb_KeyDel) && !kb_On && progress < 10;
 }
