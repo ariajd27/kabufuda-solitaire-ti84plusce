@@ -11,7 +11,10 @@
 
 extern gfx_sprite_t* cardSprite[11];
 
+void drawBackground();
 void drawCursor(unsigned char X, unsigned char Y);
 void drawFrame();
+
+void animateDeal();
 
 #endif

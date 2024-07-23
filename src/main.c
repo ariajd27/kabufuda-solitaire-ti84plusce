@@ -51,14 +51,16 @@ void start()
 		}
 	}
 
+	// set initial variables
 	fcUnlocked = 1;
 	progress = 0;
-
 	cursorMode = SELECT;
 	cursorStack = NUM_FREECELLS;
 	cursorIndex = 40 / NUM_TABLSLOTS - 1;
-
 	selectedCard = 1;
+
+	// animate the deal
+	animateDeal();
 }
 
 bool run()

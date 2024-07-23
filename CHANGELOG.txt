@@ -1,3 +1,9 @@
+Version 1.3.0:
+ - fixed and further overhauled control scheme
+ - fixed bug where card could disappear if alone on stack and other card(s)
+   placed above it
+ - added dealing animation
+
 Version 1.2.0:
  - overhauled control scheme
  - switched to an uncompressed program and archived graphics
