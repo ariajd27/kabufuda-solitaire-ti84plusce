@@ -10,7 +10,7 @@ source public at https://github.com/ariajd27/kabufuda-solitaire-ti84plusce
 
 ==========================================================================
 
-=== Rules ===
+                           === Rules ===
 
 Identical cards may be stacked on each other (in the tableau) and moved
 as a group. If all four copies of a card are stacked directly on the
@@ -28,7 +28,7 @@ Pressing ON mid-game will save and exit. To reset, press DEL. You will
 probably do this frequently; it is easy to find yourself in an
 unwinnable state.
 
-=== Controls ===
+                          === Controls ===
 
 - arrow keys to move the cursor
 - 2ND or ENTER to select cards to be moved, or once selected, to move
@@ -40,14 +40,14 @@ unwinnable state.
 Stacks wrap around. To get to the free cells, go further left than
 the leftmost tableau stack, or further right than the rightmost.
 
-=== Launching the Game ===
+                     === Launching the Game ===
 
 This is an ASM program, so it must be run using the "Asm(" token found
 in the first page of the catalog (2nd+0). Also, for some reason it often
 doesn't launch the first time. Just press ENTER to run the command again,
 and it should work.
 
-=== Memory Usage ===
+                       === Memory Usage ===
 
 RAM: 6071 B
  - KBFDSLTR: 5968 B
@@ -57,7 +57,7 @@ RAM: 6071 B
 ARC: 15126 B
  - KBFDGFX: 15126 B
 
-=== License ===
+                        === License ===
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
