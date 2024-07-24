@@ -1,8 +1,14 @@
-=============================================
-Kabufuda Solitaire
-as designed by Zachtronics
-art and code by euphory for the TI-84 Plus CE
-=============================================
+==========================================================================
+
+                    as designed by Zachtronics
+
+						KABUFUDA SOLITAIRE
+
+             art and code by euphory for the TI-84 Plus CE
+
+source public at https://github.com/ariajd27/kabufuda-solitaire-ti84plusce
+
+==========================================================================
 
 === Rules ===
 
