@@ -50,6 +50,8 @@ bool run()
 		// this way we know not to try to resume
 		deleteSave();
 
+		drawFrame();
+
 		while (kb_AnyKey());
 
 		while (true)
