@@ -1,3 +1,6 @@
+Version 1.4.0:
+ - added ability for game to resume when reopened
+
 Version 1.3.0:
  - fixed and further overhauled control scheme
  - fixed bug where card could disappear if alone on stack and other card(s)

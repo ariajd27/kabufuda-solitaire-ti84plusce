@@ -1,7 +1,24 @@
+// Kabufuda Solitaire / KBFDSLTR for the TI-84 Plus CE
+// Copyright (C) 2024 euphory
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 #ifndef variables_include_file
 #define variables_include_file
 
-#define SAVE_VAR_NAME "KBFDWINS"
+#define WINS_VAR_NAME "KBFDWINS"
+#define SAVE_VAR_NAME "KBFDSAVE"
 
 #define BKGND_COLOR 2
 #define BORDER_COLOR 1
@@ -12,7 +29,7 @@
 
 #define NUM_FREECELLS 4
 #define NUM_TABLSLOTS 8
-#define TABL_STACK_SIZE 16
+#define TABL_STACK_SIZE 8
 #define LOCK_ICON_VOFFSET 17
 #define LOCK_ICON_HOFFSET 9
 #define FC_VPOS 50

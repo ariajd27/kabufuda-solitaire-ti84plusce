@@ -1,7 +1,26 @@
+// Kabufuda Solitaire / KBFDSLTR for the TI-84 Plus CE
+// Copyright (C) 2024 euphory
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 #include "ops.h"
 
 #include <stdlib.h>
+#include <fileioc.h>
+
 #include "variables.h"
+#include "save.h"
 
 unsigned char cursorStack;
 unsigned char cursorIndex;
@@ -10,6 +29,26 @@ unsigned char selectedCard;
 unsigned char selectedQty;
 unsigned char orgStack;
 unsigned char orgIndex;
+
+void start()
+{
+	loadWins();
+
+	// fill tableau and free cells with empty space
+	for (unsigned char i = 0; i < NUM_FREECELLS; i++) 
+		freeCells[i] = 11;
+	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
+		for (unsigned char j = 0; j < TABL_STACK_SIZE; j++)
+			tableau[i][j] = 11;
+
+	load(); // will call deal() as well if necessary
+
+	// set initial variables
+	cursorMode = SELECT;
+	cursorStack = NUM_FREECELLS;
+	maxCursorIndex();
+	selectedCard = tableau[cursorStack][cursorIndex];
+}
 
 bool canGrabCard()
 {

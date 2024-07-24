@@ -1,4 +1,19 @@
-#include <sys/rtc.h>
+// Kabufuda Solitaire / KBFDSLTR for the TI-84 Plus CE
+// Copyright (C) 2024 euphory
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 #include <fileioc.h>
 #include <stdlib.h>
 #include <math.h>
@@ -8,60 +23,14 @@
 #include "variables.h"
 #include "input.h"
 #include "drawing.h"
+#include "save.h"
+#include "ops.h"
 
 unsigned char tableau[NUM_TABLSLOTS][TABL_STACK_SIZE];
 unsigned char freeCells[NUM_FREECELLS];
 unsigned char fcUnlocked;
 unsigned char progress;
 unsigned char numWins;
-
-void start()
-{
-	srand(rtc_Time());
-
-	// get number of wins
-	numWins = 0;
-	unsigned char saveHandle = ti_Open(SAVE_VAR_NAME, "r");
-	if (saveHandle != 0) ti_Read(&numWins, 1, 1, saveHandle);
-	ti_Close(saveHandle);
-
-	// fill tableau and free cells with empty space
-	for (unsigned char i = 0; i < NUM_FREECELLS; i++) 
-		freeCells[i] = 11;
-	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
-		for (unsigned char j = 0; j < TABL_STACK_SIZE; j++)
-			tableau[i][j] = 11;
-
-	// deal the deck
-	for (unsigned char i = 0; i < 10; i++)
-	{
-		for (unsigned char j = 0; j < 4; j++)
-		{
-			while (true)
-			{
-				unsigned char dStack = rand() % 8;
-				unsigned char dIndex = rand() % 5;
-
-				if (tableau[dStack][dIndex] == 11)
-				{
-					tableau[dStack][dIndex] = i;
-					break;
-				}
-			}
-		}
-	}
-
-	// set initial variables
-	fcUnlocked = 1;
-	progress = 0;
-	cursorMode = SELECT;
-	cursorStack = NUM_FREECELLS;
-	cursorIndex = 40 / NUM_TABLSLOTS - 1;
-	selectedCard = 1;
-
-	// animate the deal
-	animateDeal();
-}
 
 bool run()
 {
@@ -78,9 +47,8 @@ bool run()
 
 	if (progress == 10)
 	{
-		unsigned char const saveHandle = ti_Open(SAVE_VAR_NAME, "w");
-		ti_Write(&numWins, 1, 1, saveHandle);
-		ti_Close(saveHandle);
+		// this way we know not to try to resume
+		deleteSave();
 
 		while (kb_AnyKey());
 
@@ -91,7 +59,12 @@ bool run()
 			if (kb_IsDown(kb_Key2nd) || kb_IsDown(kb_KeyEnter)) return true;
 		}
 	}
-	else return !kb_On;
+	else
+	{
+		// user exited mid-game
+		save();
+		return false;
+	}
 }
 
 int main(void)

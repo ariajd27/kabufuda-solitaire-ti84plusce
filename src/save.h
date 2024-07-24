@@ -14,23 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef drawing_include_file
-#define drawing_include_file
+#ifndef save_include_file
+#define save_include_file
 
-#include <graphx.h>
-#include <gfx/gfx.h>
-
-#define CARD_HEIGHT card1_height
-#define CARD_WIDTH card1_width
-#define CARD_SPACING 5
-#define CARD_VOFFSET 8
-
-extern gfx_sprite_t* cardSprite[11];
-
-void drawBackground();
-void drawCursor(unsigned char X, unsigned char Y);
-void drawFrame();
-
-void animateDeal();
+void deal();
+void load();
+void save();
+void deleteSave();
+void loadWins();
+void saveWins();
 
 #endif
