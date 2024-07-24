@@ -2,7 +2,7 @@
 
                     as designed by Zachtronics
 
-						KABUFUDA SOLITAIRE
+			KABUFUDA SOLITAIRE
 
              art and code by euphory for the TI-84 Plus CE
 
