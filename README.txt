@@ -40,14 +40,17 @@ unwinnable state.
 Stacks wrap around. To get to the free cells, go further left than
 the leftmost tableau stack, or further right than the rightmost.
 
-                     === Launching the Game ===
+                        === Installation ===
+
+Use TILP or any other linking program to put KBFDSLTR.8xg on your
+TI-84 Plus CE. If updating from a previous version, make sure to update
+KBFDSLTR, but overwriting KBFDGFX is unnecessary.
 
 This is an ASM program, so it must be run using the "Asm(" token found
-in the first page of the catalog (2nd+0). Also, for some reason it often
-doesn't launch the first time. Just press ENTER to run the command again,
-and it should work.
+in the first page of the catalog (2nd+0). If your calculator does not
+have an "Asm(" token, consider using something like arTIfice.
 
-                       === Memory Usage ===
+                        === Memory Usage ===
 
 RAM: 6071 B
  - KBFDSLTR: 5968 B
@@ -57,7 +60,7 @@ RAM: 6071 B
 ARC: 15126 B
  - KBFDGFX: 15126 B
 
-                        === License ===
+                         === License ===
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
