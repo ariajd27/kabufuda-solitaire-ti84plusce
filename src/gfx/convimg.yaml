@@ -7,20 +7,21 @@ palettes:
     images: automatic
 
 converts:
-  - name: sprites
+  - name: detailed
     palette: global_palette
     transparent-color-index: 3
     images:
-      - card1.png
-      - card2.png
-      - card3.png
-      - card4.png
-      - card5.png
-      - card6.png
-      - card7.png
-      - card8.png
-      - card9.png
-      - card10.png
+      - detailed/*
+      - cardstack.png
+      - freespace.png
+      - lock.png
+      - selcorner.png
+      - drpcorner.png
+  - name: highcontrast
+    palette: global_palette
+    transparent-color-index: 3
+    images:
+      - highcontrast/*
       - cardstack.png
       - freespace.png
       - lock.png
@@ -36,5 +37,5 @@ outputs:
     palettes:
       - global_palette
     converts:
-      - sprites
-
+      - highcontrast # change this between "detailed" and "highcontrast",
+                     # then run "make gfx && make && make group"
