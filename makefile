@@ -5,7 +5,7 @@
 NAME = KBFDSLTR
 ICON = icon.png
 DESCRIPTION = "Zachtronics's Kabufuda Solitaire"
-COMPRESSED = NO
+COMPRESSED = YES
 ARCHIVED = NO
 
 CFLAGS = -Wall -Wextra -Oz
