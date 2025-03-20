@@ -53,8 +53,8 @@
 #define DECK_HPOS (FC_HPOS - CARD_WIDTH - CARD_SPACING)
 #define DECK_CARDS_PER_HEIGHT 9
 
-#define SELCARD_XPOS ((GFX_LCD_WIDTH - CARD_WIDTH) / 2)
-#define SELCARD_YPOS (GFX_LCD_HEIGHT - CARD_HEIGHT / 2)
+#define SELCARD_XPOS 147
+#define SELCARD_YPOS 220
 
 extern gfx_sprite_t* cardSprite[11];
 

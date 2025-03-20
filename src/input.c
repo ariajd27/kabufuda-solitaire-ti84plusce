@@ -130,11 +130,6 @@ bool doInput()
 		while (!(tableau[cursorStack][cursorIndex] & CARD_EXISTS) && cursorIndex > 0) cursorIndex--;
 	}
 
-	if (cursorMode == SELECT)
-	{
-		selectedCard = cursorStack < NUM_FREECELLS ? freeCells[cursorStack] : tableau[cursorStack - NUM_FREECELLS][cursorIndex];
-	}
-
 	if (kb_IsDown(kb_KeyDel))
 	{
 		deleteSave();
