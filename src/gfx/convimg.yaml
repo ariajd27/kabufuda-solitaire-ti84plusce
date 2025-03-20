@@ -1,11 +1,15 @@
 palettes:
   - name: global_palette
     fixed-entries:
-      - color: {index: 0, r: 0, g: 0, b: 0}
-      - color: {index: 1, r: 255, g: 255, b: 255}
+      - color: {index: 0, r: 255, g: 255, b: 255}
+      - color: {index: 1, r: 0, g: 0, b: 0}
       - color: {index: 2, r: 255, g: 0, b: 0}
       - color: {index: 3, r: 5, g: 110, b: 45}
     images: automatic
+  - name: binary
+    fixed-entries:
+      - color: {index: 0, r: 255, g: 255, b: 255}
+      - color: {index: 1, r: 0, g: 0, b: 0}
 
 converts:
   - name: sprites
@@ -19,7 +23,9 @@ converts:
       - drpcorner.png
   - name: numerals
     style: palette
-    palette: global_palette
+    bpp: 1
+    width-and-height: false
+    palette: binary
     tilesets:
       tile-width: 8
       tile-height: 5
@@ -27,7 +33,9 @@ converts:
        - numerals.png
   - name: small_suits
     style: palette
-    palette: global_palette
+    bpp: 1
+    width-and-height: false
+    palette: binary
     tilesets:
       tile-width: 8
       tile-height: 4
@@ -35,7 +43,9 @@ converts:
        - small_suits.png
   - name: medium_suits
     style: palette
-    palette: global_palette
+    bpp: 1
+    width-and-height: false
+    palette: binary
     tilesets:
       tile-width: 8
       tile-height: 6
