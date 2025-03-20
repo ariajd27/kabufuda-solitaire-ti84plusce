@@ -51,9 +51,19 @@ bool canGrabCard()
 
 bool canDropCard()
 {
-	if (cursorStack < NUM_FREECELLS && freeCells[cursorStack] != 12) return selectedCard == (cursorStack + freeCells[cursorStack]) % 13;
-	else if (cursorIndex == 0) return true;
-	else return !(tableau[cursorStack - NUM_FREECELLS][cursorIndex + 1] & CARD_EXISTS);
+	if (cursorStack < NUM_FREECELLS)
+	{
+		if ((freeCells[cursorStack] & CARD_NUMBER) == CARD_KING) return false;
+		else return (selectedCard & CARD_NUMBER) == (cursorStack + (freeCells[cursorStack] & CARD_NUMBER) + 1) % 13;
+	}
+	else if (cursorIndex == 0)
+	{
+		return true;
+	}
+	else
+	{
+		return !(tableau[cursorStack - NUM_FREECELLS][cursorIndex + 1] & CARD_EXISTS);
+	}
 }
 
 card_t getNewCard()

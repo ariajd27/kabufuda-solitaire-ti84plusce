@@ -58,10 +58,6 @@ bool doInput()
 			dropCard();
 			cursorMode = SELECT;
 		}
-		else if (cursorStack == orgStack)
-		{
-			cursorMode = SELECT;
-		}
 	}
 	else if (clear)
 	{
