@@ -55,11 +55,6 @@ bool canDropCard()
 	else return !(tableau[cursorStack - NUM_FREECELLS][cursorIndex + 1] & CARD_EXISTS);
 }
 
-bool checkTableauCollapse(unsigned char stackToCheck)
-{
-	return false;
-}
-
 card_t getNewCard()
 {
 	while (true)
@@ -100,14 +95,3 @@ void maxCursorIndex()
 	cursorIndex = 0;
 	while (tableau[cursorStack - NUM_FREECELLS][cursorIndex] & CARD_EXISTS) cursorIndex++;
 }
-
-bool cursorOnCollapsed()
-{
-	return false;
-}
-
-bool cursorOnLocked()
-{
-	return false;
-}
-

@@ -85,21 +85,13 @@ bool doInput()
 	}
 	else if (left == 1 || left > HOLD_TIME)
 	{
-		do
-		{
-			if (cursorStack == 0) cursorStack = NUM_FREECELLS + NUM_TABLSLOTS - 1; // wrap
-			else cursorStack--;
-		}
-		while (cursorOnCollapsed() || cursorOnLocked()); // skip useless stacks
+		if (cursorStack == 0) cursorStack = NUM_FREECELLS + NUM_TABLSLOTS - 1; // wrap
+		else cursorStack--;
 	}
 	else if (right == 1 || right > HOLD_TIME)
 	{
-		do
-		{
-			if (cursorStack > NUM_FREECELLS + NUM_TABLSLOTS - 2) cursorStack = 0; // wrap
-			else cursorStack++;
-		}
-		while (cursorOnCollapsed() || cursorOnLocked()); // skip useless stacks
+		if (cursorStack > NUM_FREECELLS + NUM_TABLSLOTS - 2) cursorStack = 0; // wrap
+		else cursorStack++;
 	}
 	else if (up == 1 || up > HOLD_TIME)
 	{
