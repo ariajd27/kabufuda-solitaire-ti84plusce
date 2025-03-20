@@ -78,44 +78,27 @@ card_t getNewCard()
 
 void dropCard()
 {
-	if (cursorStack == orgStack) return;
-
 	unsigned char const prevProgress = progress;
 
 	if (cursorStack < NUM_FREECELLS)
 	{
-		if (selectedQty == 1) freeCells[cursorStack] = selectedCard;
-		else
-		{
-			progress++;
-			freeCells[cursorStack] = 12 + selectedCard;
-		}
+		freeCells[cursorStack] = selectedCard;
+		if ((selectedCard & CARD_NUMBER) == CARD_KING) progress++;
 	}
 	else
 	{
-		for (unsigned char i = cursorIndex; i < cursorIndex + selectedQty; i++)
-			tableau[cursorStack - NUM_FREECELLS][i] = selectedCard;
-		if (checkTableauCollapse(cursorStack - NUM_FREECELLS))
-		{
-			progress++;
-			tableau[cursorStack - NUM_FREECELLS][0] = selectedCard + 12;
-			for (int i = 1; i < 4; i++) tableau[cursorStack - NUM_FREECELLS][i] = 11;
-		}
+		tableau[cursorStack - NUM_FREECELLS][cursorIndex] = selectedCard;
 	}
 
-	if (orgStack < NUM_FREECELLS) freeCells[orgStack] = 11;
-	else for (unsigned char i = orgIndex; i < orgIndex + selectedQty; i++)
-		tableau[orgStack - NUM_FREECELLS][i] = 11;
-
-	if (progress == 10 && prevProgress < 10) numWins++;
+	if (progress == PROGRESS_COMPLETE && prevProgress < PROGRESS_COMPLETE) numWins++;
 }
 
 void maxCursorIndex()
 {
 	if (cursorStack < NUM_FREECELLS) return;
 
-	cursorIndex = TABL_STACK_SIZE - 1;
-	while (!(tableau[cursorStack - NUM_FREECELLS][cursorIndex] & CARD_EXISTS) && cursorIndex > 0) cursorIndex--;
+	cursorIndex = 0;
+	while (tableau[cursorStack - NUM_FREECELLS][cursorIndex] & CARD_EXISTS) cursorIndex++;
 }
 
 bool cursorOnCollapsed()

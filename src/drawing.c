@@ -139,6 +139,8 @@ void drawFrame()
 					gfx_PrintString("DIAMONDS");
 					break;
 			}
+
+			drawCard(selectedCard, SELCARD_DISP_X, SELCARD_DISP_Y);
 		}
 		else gfx_PrintString("EMPTY");
 

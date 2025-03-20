@@ -27,7 +27,6 @@ unsigned char down, left, right, up;
 bool doInput()
 {
 	const bool prevSecond = kb_IsDown(kb_Key2nd);
-	const bool prevEnter = kb_IsDown(kb_KeyEnter);
 	const bool prevAlpha = kb_IsDown(kb_KeyAlpha);
 	const bool prevClear = kb_IsDown(kb_KeyClear);
 
@@ -38,8 +37,9 @@ bool doInput()
 	left = kb_IsDown(kb_KeyLeft) ? left + 1 : 0;
 	right = kb_IsDown(kb_KeyRight) ? right + 1 : 0;
 
-	const bool select = (kb_IsDown(kb_Key2nd) && !prevSecond) || (kb_IsDown(kb_KeyEnter) && !prevEnter);
-	const bool clear = (kb_IsDown(kb_KeyClear) && !prevClear) || (kb_IsDown(kb_KeyAlpha) && !prevAlpha);
+	const bool select = (kb_IsDown(kb_Key2nd) && !prevSecond);
+	const bool alpha = (kb_IsDown(kb_KeyAlpha) && !prevAlpha);
+	const bool clear = (kb_IsDown(kb_KeyClear) && !prevClear);
 
 	if (select)
 	{
@@ -61,8 +61,15 @@ bool doInput()
 	}
 	else if (clear)
 	{
-		if (cursorMode == DROP && orgStack != DECK_ORG) cursorMode = SELECT;
-		else if (cursorMode == SELECT)
+		if (orgStack != DECK_ORG)
+		{
+			cursorMode = SELECT;
+			selectedCard = CARD_EMPTY;
+		}
+	}
+	else if (alpha)
+	{
+		if (cursorMode == SELECT)
 		{
 			selectedCard = getNewCard();
 			orgStack = DECK_ORG;
@@ -116,7 +123,7 @@ bool doInput()
 			else
 			{
 				maxCursorIndex();
-				cursorIndex++;
+				if (cursorIndex > 0) cursorIndex++;
 			}
 		}
 		else cursorIndex = orgIndex; // also this makes it more clear if we are trying to drop
@@ -128,7 +135,7 @@ bool doInput()
 	}
 	else
 	{
-		while (tableau[cursorStack - NUM_FREECELLS][cursorIndex] == 11 && cursorIndex > 0) cursorIndex--;
+		while (!(tableau[cursorStack][cursorIndex] & CARD_EXISTS) && cursorIndex > 0) cursorIndex--;
 	}
 
 	if (cursorMode == SELECT)

@@ -43,15 +43,18 @@
 
 #define BKGND_COLOR 3
 #define BORDER_COLOR 0
-#define CARD_COLOR 1
-#define BLACK_COLOR 0
+#define CARD_COLOR 0
+#define BLACK_COLOR 1
 #define RED_COLOR 2
 
 #define TOP_BORDER 25
 
-#define DECK_VPOS 50
-#define DECK_HPOS 75
+#define DECK_VPOS FC_VPOS
+#define DECK_HPOS (FC_HPOS - CARD_WIDTH - CARD_SPACING)
 #define DECK_CARDS_PER_HEIGHT 9
+
+#define SELCARD_XPOS ((GFX_LCD_WIDTH - CARD_WIDTH) / 2)
+#define SELCARD_YPOS (GFX_LCD_HEIGHT - CARD_HEIGHT / 2)
 
 extern gfx_sprite_t* cardSprite[11];
 
