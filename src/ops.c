@@ -39,41 +39,24 @@ void start()
 	cursorMode = SELECT;
 	cursorStack = NUM_FREECELLS;
 	maxCursorIndex();
-	selectedCard = tableau[cursorStack][cursorIndex];
+	selectedCard = CARD_EMPTY;
 }
 
 bool canGrabCard()
 {
 	if (cursorStack < NUM_FREECELLS) return false;
-
-	if (tableau[cursorStack - NUM_FREECELLS][0] > 11) return false;
-	for (unsigned char i = cursorIndex + 1; i < TABL_STACK_SIZE; i++)
-	{
-		const unsigned char x = tableau[cursorStack - NUM_FREECELLS][i];
-		if (x == 11) return true;
-		if (x != selectedCard) return false;
-	}
-
-	return true;
+	else return !(tableau[cursorStack - NUM_FREECELLS][cursorIndex + 1] & CARD_EXISTS);
 }
 
 bool canDropCard()
 {
 	if (cursorStack < NUM_FREECELLS && freeCells[cursorStack] != 12) return selectedCard == (cursorStack + freeCells[cursorStack]) % 13;
 	else if (cursorIndex == 0) return true;
-	else return tableau[cursorStack - NUM_FREECELLS][cursorIndex - 1] == selectedCard;
+	else return !(tableau[cursorStack - NUM_FREECELLS][cursorIndex + 1] & CARD_EXISTS);
 }
 
 bool checkTableauCollapse(unsigned char stackToCheck)
 {
-	const unsigned char x = tableau[stackToCheck][0];
-	for (unsigned char i = 1; i < 5; i++)
-	{
-		const unsigned char y = tableau[stackToCheck][i];
-		if (i == 4 && y == 11) return true;
-		if (y != x) return false;
-	}
-
 	return false;
 }
 
@@ -81,8 +64,7 @@ card_t getNewCard()
 {
 	while (true)
 	{
-		card_t card = ((rand() % 13) & 0x3f) | 0x80;
-		if ((card & CARD_NUMBER) >= 13) continue;
+		card_t card = (((rand() % 4) << 4) + (rand() % 13)) | CARD_EXISTS;
 		
 		unsigned char cardIndex = ((card & CARD_SUIT) >> 4) * (card & CARD_NUMBER);
 		unsigned char *deckByte = deck + (cardIndex / 8);
@@ -133,13 +115,12 @@ void maxCursorIndex()
 	if (cursorStack < NUM_FREECELLS) return;
 
 	cursorIndex = TABL_STACK_SIZE - 1;
-	while (tableau[cursorStack - NUM_FREECELLS][cursorIndex] == 11 && cursorIndex > 0) cursorIndex--;
+	while (!(tableau[cursorStack - NUM_FREECELLS][cursorIndex] & CARD_EXISTS) && cursorIndex > 0) cursorIndex--;
 }
 
 bool cursorOnCollapsed()
 {
-	return cursorStack < NUM_FREECELLS ? freeCells[cursorStack] > 11 
-									   : tableau[cursorStack - NUM_FREECELLS][0] > 11;
+	return false;
 }
 
 bool cursorOnLocked()

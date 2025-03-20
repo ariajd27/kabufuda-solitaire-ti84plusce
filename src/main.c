@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <sys/rtc.h>
 #include <keypadc.h>
 
 #include "variables.h"

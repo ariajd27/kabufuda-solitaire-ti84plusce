@@ -26,17 +26,6 @@
 #define NUM_FREECELLS 4
 #define NUM_TABLSLOTS 4
 #define TABL_STACK_SIZE 16
-#define LOCK_ICON_VOFFSET 17
-#define LOCK_ICON_HOFFSET 9
-#define FC_VPOS 50
-#define TABL_VPOS 100
-#define FC_HPOS 102
-#define TABL_HPOS 42
-
-#define TEXT_CHAR_WIDTH 8
-#define SELCARD_DISP_X 5
-#define SELCARD_DISP_Y 9
-#define NUMWINS_DISP_X (GFX_LCD_WIDTH - 5 - 3 * TEXT_CHAR_WIDTH)
 
 #define PROGRESS_COMPLETE 4
 #define DECK_ORG 0xff
@@ -45,6 +34,7 @@
 #define CARD_SUIT 0x30
 #define CARD_NUMBER 0x0f
 #define CARD_KING 12
+#define CARD_EMPTY 0x00
 #define CARD_EXISTS 0x80
 
 typedef unsigned char card_t;

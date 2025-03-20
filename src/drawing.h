@@ -29,6 +29,17 @@
 #define CARD_NUMERAL_VOFFSET 1
 #define CARD_FSUIT_HOFFSET 2
 #define CARD_FSUIT_VOFFSET 7
+#define LOCK_ICON_VOFFSET 17
+#define LOCK_ICON_HOFFSET 9
+#define FC_VPOS 50
+#define TABL_VPOS 100
+#define FC_HPOS 102
+#define TABL_HPOS 102
+
+#define TEXT_CHAR_WIDTH 8
+#define SELCARD_DISP_X 5
+#define SELCARD_DISP_Y 9
+#define NUMWINS_DISP_X (GFX_LCD_WIDTH - 5 - 3 * TEXT_CHAR_WIDTH)
 
 #define BKGND_COLOR 3
 #define BORDER_COLOR 0
@@ -38,8 +49,8 @@
 
 #define TOP_BORDER 25
 
-#define DECK_VPOS 15
-#define DECK_HPOS 15
+#define DECK_VPOS 50
+#define DECK_HPOS 75
 #define DECK_CARDS_PER_HEIGHT 9
 
 extern gfx_sprite_t* cardSprite[11];

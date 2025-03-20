@@ -65,6 +65,7 @@ bool doInput()
 		else if (cursorMode == SELECT)
 		{
 			selectedCard = getNewCard();
+			orgStack = DECK_ORG;
 			cursorMode = DROP;
 		}
 	}

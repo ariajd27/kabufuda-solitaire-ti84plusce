@@ -18,6 +18,7 @@
 #define ops_include_file
 
 #include <stdbool.h>
+#include "variables.h"
 
 void start();
 

@@ -119,9 +119,26 @@ void drawFrame()
 	if (progress < PROGRESS_COMPLETE)
 	{
 		gfx_SetTextXY(SELCARD_DISP_X, SELCARD_DISP_Y);
-		if (selectedCard < 13)
+		if (selectedCard & CARD_EXISTS)
 		{
-			gfx_PrintUInt(selectedCard + 1, 1);
+			gfx_PrintUInt((selectedCard & CARD_NUMBER) + 1, 1);
+			gfx_PrintString("OF ");
+
+			switch ((selectedCard & CARD_SUIT) >> 4)
+			{
+				case 0:
+					gfx_PrintString("SPADES");
+					break;
+				case 1:
+					gfx_PrintString("CLUBS");
+					break;
+				case 2:
+					gfx_PrintString("HEARTS");
+					break;
+				case 3:
+					gfx_PrintString("DIAMONDS");
+					break;
+			}
 		}
 		else gfx_PrintString("EMPTY");
 
