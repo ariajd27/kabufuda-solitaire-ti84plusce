@@ -21,6 +21,7 @@ converts:
       - lock.png
       - selcorner.png
       - drpcorner.png
+      - card_back.png
   - name: numerals
     style: palette
     bpp: 1
