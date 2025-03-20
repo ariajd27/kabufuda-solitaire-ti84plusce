@@ -8,33 +8,47 @@ palettes:
 
 converts:
   - name: sprites
+    style: palette
     palette: global_palette
     transparent-color-index: 3
     images:
-      - card1.png
-      - card2.png
-      - card3.png
-      - card4.png
-      - card5.png
-      - card6.png
-      - card7.png
-      - card8.png
-      - card9.png
-      - card10.png
-      - cardstack.png
       - freespace.png
       - lock.png
       - selcorner.png
       - drpcorner.png
+  - name: numerals
+    style: palette
+    palette: global_palette
+    tilesets:
+      tile-width: 8
+      tile-height: 5
+      images:
+       - numerals.png
+  - name: small_suits
+    style: palette
+    palette: global_palette
+    tilesets:
+      tile-width: 8
+      tile-height: 4
+      images:
+       - small_suits.png
+  - name: medium_suits
+    style: palette
+    palette: global_palette
+    tilesets:
+      tile-width: 8
+      tile-height: 6
+      images:
+       - medium_suits.png
 
 outputs:
-  - type: appvar
-    name: "KBFDGFX"
+  - type: c
     include-file: gfx.h
-    source-format: c
-    archived: true
     palettes:
       - global_palette
     converts:
       - sprites
+      - numerals
+      - small_suits
+      - medium_suits
 
