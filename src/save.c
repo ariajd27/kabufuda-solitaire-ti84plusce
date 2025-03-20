@@ -45,7 +45,6 @@ void deal()
 		}
 	}
 
-	fcUnlocked = 1;
 	progress = 0;
 
 	animateDeal();
@@ -68,7 +67,6 @@ void load()
 		
 		// how far along does that make us?
 		progress = 0;
-		fcUnlocked = 1;
 		for (unsigned char i = 0; i < NUM_FREECELLS; i++)
 		{
 			if (freeCells[i] > 11)
@@ -81,7 +79,6 @@ void load()
 			if (tableau[i][0] > 11)
 			{
 				progress++;
-				fcUnlocked++;
 			}
 		}
 	}

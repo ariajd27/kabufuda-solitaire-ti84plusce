@@ -124,20 +124,7 @@ bool doInput()
 
 	if (cursorMode == SELECT)
 	{
-		selectedQty = 1;
-		if (cursorStack < NUM_FREECELLS) selectedCard = freeCells[cursorStack];
-		else 
-		{
-			selectedCard = tableau[cursorStack - NUM_FREECELLS][cursorIndex];
-			for (int i = cursorIndex + 1; tableau[cursorStack - NUM_FREECELLS][i] == selectedCard; i++) 
-				selectedQty++;
-		}
-
-		if (selectedCard > 11)
-		{
-			selectedCard -= 12;
-			selectedQty = 4;
-		}
+		selectedCard = cursorStack < NUM_FREECELLS ? freeCells[cursorStack] : tableau[cursorStack - NUM_FREECELLS][cursorIndex];
 	}
 
 	if (kb_IsDown(kb_KeyDel))

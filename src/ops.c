@@ -98,7 +98,6 @@ void dropCard()
 			tableau[cursorStack - NUM_FREECELLS][i] = selectedCard;
 		if (checkTableauCollapse(cursorStack - NUM_FREECELLS))
 		{
-			fcUnlocked++;
 			progress++;
 			tableau[cursorStack - NUM_FREECELLS][0] = selectedCard + 12;
 			for (int i = 1; i < 4; i++) tableau[cursorStack - NUM_FREECELLS][i] = 11;
@@ -128,6 +127,6 @@ bool cursorOnCollapsed()
 
 bool cursorOnLocked()
 {
-	return cursorStack >= fcUnlocked && cursorStack < NUM_FREECELLS;
+	return false;
 }
 

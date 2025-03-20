@@ -71,20 +71,6 @@ bool run()
 
 int main(void)
 {
-	KBFDGFX_init();
-
-	cardSprite[0] = card1;
-	cardSprite[1] = card2;
-	cardSprite[2] = card3;
-	cardSprite[3] = card4;
-	cardSprite[4] = card5;
-	cardSprite[5] = card6;
-	cardSprite[6] = card7;
-	cardSprite[7] = card8;
-	cardSprite[8] = card9;
-	cardSprite[9] = card10;
-	cardSprite[10] = cardstack;
-
 	gfx_Begin();
 	gfx_SetDrawBuffer();
 	gfx_SetPalette(global_palette, sizeof_global_palette, 0);
