@@ -61,14 +61,20 @@ card_t getNewCard()
 	{
 		card_t card = (((rand() % 4) << 4) + (rand() % 13)) | CARD_EXISTS;
 		
-		unsigned char cardIndex = ((card & CARD_SUIT) >> 4) * (card & CARD_NUMBER);
-		unsigned char *deckByte = deck + (cardIndex / 8);
-		unsigned char pokeByte = 0x01 << (cardIndex % 8);
-		if (*deckByte & pokeByte) continue;
-		*deckByte |= pokeByte;
-		deckCards--;
+		if (removeFromDeck(card)) continue;
 		return card;
 	}
+}
+
+bool removeFromDeck(card_t toRemove)
+{
+	unsigned char cardIndex = ((toRemove & CARD_SUIT) >> 4) * (toRemove & CARD_NUMBER);
+	unsigned char *deckByte = deck + (cardIndex / 8);
+	unsigned char pokeByte = 0x01 << (cardIndex % 8);
+	if (*deckByte & pokeByte) return true;
+	*deckByte |= pokeByte;
+	deckCards--;
+	return false;
 }
 
 void dropCard()

@@ -22,6 +22,7 @@
 
 #include "variables.h"
 #include "drawing.h"
+#include "ops.h"
 
 unsigned char deck[7];
 unsigned char deckCards;
@@ -39,6 +40,20 @@ void load()
 		for (unsigned char i = 0; i < 7; i++)
 		{
 			deck[i] = 0x00;
+		}
+
+		for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
+		{
+			for (unsigned char j = 0; j < TABL_STACK_SIZE; j++)
+			{
+				tableau[i][j] = CARD_EMPTY;
+			}
+		}
+
+		for (unsigned char i = 0; i < NUM_FREECELLS; i++)
+		{
+			freeCells[i] = CARD_EXISTS | i | (unsigned char)(rand() & CARD_SUIT);
+			removeFromDeck(freeCells[i]);
 		}
 	}
 	else
