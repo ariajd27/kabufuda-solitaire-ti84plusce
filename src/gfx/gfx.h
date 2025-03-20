@@ -11,6 +11,7 @@ extern "C" {
 #include "lock.h"
 #include "selcorner.h"
 #include "drpcorner.h"
+#include "card_back.h"
 #define numerals_palette_offset 0
 #include "numerals.h"
 #define small_suits_palette_offset 0

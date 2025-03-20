@@ -43,23 +43,25 @@
 #define CARD_RED 0x20
 #define CARD_SUIT 0x30
 #define CARD_NUMBER 0x0f
+#define CARD_KING 12
 #define CARD_EXISTS 0x80
 
 typedef unsigned char card_t;
 
 extern card_t tableau[NUM_TABLSLOTS][TABL_STACK_SIZE];
 extern card_t freeCells[NUM_FREECELLS];
-// extern unsigned char fcUnlocked;
 
 extern unsigned char cursorStack;
 extern unsigned char cursorIndex;
 extern enum cursorMode_t { SELECT, DROP } cursorMode;
-extern unsigned char selectedCard;
-// extern unsigned char selectedQty;
+extern card_t selectedCard;
 extern unsigned char orgStack;
 extern unsigned char orgIndex;
 
 extern unsigned char progress;
 extern unsigned char numWins;
+
+extern unsigned char deck[7];
+extern unsigned char deckCards;
 
 #endif

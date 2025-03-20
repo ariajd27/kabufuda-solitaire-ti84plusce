@@ -28,7 +28,6 @@
 
 card_t tableau[NUM_TABLSLOTS][TABL_STACK_SIZE];
 card_t freeCells[NUM_FREECELLS];
-// unsigned char fcUnlocked;
 unsigned char progress;
 unsigned char numWins;
 
@@ -45,7 +44,7 @@ bool run()
 		while (clock() - frameTimer < FRAME_TIME);
 	}
 
-	if (progress == 4)
+	if (progress == PROGRESS_COMPLETE)
 	{
 		// this way we know not to try to resume
 		deleteSave();

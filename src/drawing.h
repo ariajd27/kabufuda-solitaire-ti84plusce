@@ -38,12 +38,14 @@
 
 #define TOP_BORDER 25
 
+#define DECK_VPOS 15
+#define DECK_HPOS 15
+#define DECK_CARDS_PER_HEIGHT 9
+
 extern gfx_sprite_t* cardSprite[11];
 
 void drawBackground();
 void drawCursor(unsigned char X, unsigned char Y);
 void drawFrame();
-
-void animateDeal();
 
 #endif

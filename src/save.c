@@ -23,32 +23,8 @@
 #include "variables.h"
 #include "drawing.h"
 
-void deal()
-{
-	srand(rtc_Time());
-
-	for (unsigned char i = 0; i < 10; i++)
-	{
-		for (unsigned char j = 0; j < 4; j++)
-		{
-			while (true)
-			{
-				unsigned char dStack = rand() % 8;
-				unsigned char dIndex = rand() % 5;
-
-				if (tableau[dStack][dIndex] == 11)
-				{
-					tableau[dStack][dIndex] = i;
-					break;
-				}
-			}
-		}
-	}
-
-	progress = 0;
-
-	animateDeal();
-}
+unsigned char deck[7];
+unsigned char deckCards;
 
 void load()
 {
@@ -57,7 +33,13 @@ void load()
 	if (saveHandle == 0)
 	{
 		// no save present
-		deal();
+		progress = 0;
+		deckCards = 52;
+
+		for (unsigned char i = 0; i < 7; i++)
+		{
+			deck[i] = 0x00;
+		}
 	}
 	else
 	{
@@ -69,18 +51,11 @@ void load()
 		progress = 0;
 		for (unsigned char i = 0; i < NUM_FREECELLS; i++)
 		{
-			if (freeCells[i] > 11)
-			{
-				progress++;
-			}
+			if ((freeCells[i] & CARD_NUMBER) == CARD_KING) progress++;
 		}
-		for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
-		{
-			if (tableau[i][0] > 11)
-			{
-				progress++;
-			}
-		}
+
+		ti_Read(&deckCards, 1, 1, saveHandle);
+		ti_Read(deck, 1, 7, saveHandle);
 	}
 
 	ti_Close(saveHandle);
@@ -92,6 +67,8 @@ void save()
 
 	ti_Write(freeCells, 1, NUM_FREECELLS, saveHandle);
 	ti_Write(tableau, 1, NUM_TABLSLOTS * TABL_STACK_SIZE, saveHandle);
+	ti_Write(&deckCards, 1, 1, saveHandle);
+	ti_Write(deck, 1, 7, saveHandle);
 
 	ti_Close(saveHandle);
 }

@@ -78,9 +78,21 @@ void drawCard(card_t toDraw, unsigned char x, unsigned char y)
 	drawMask(small_suits_tiles_data[(toDraw & CARD_SUIT) >> 4], 4, x + CARD_FSUIT_HOFFSET, y + CARD_FSUIT_VOFFSET);
 }
 
+void drawDeck()
+{
+	unsigned char y = DECK_VPOS;
+	for (unsigned char x = 0; x <= deckCards; x += DECK_CARDS_PER_HEIGHT)
+	{
+		gfx_Sprite(card_back, DECK_HPOS, y);
+		y -= 2;
+	}
+}
+
 void drawFrame()
 {
 	drawBackground();
+
+	drawDeck();
 
 	for (unsigned char i = 0; i < NUM_FREECELLS; i++)
 	{
@@ -123,77 +135,4 @@ void drawFrame()
 	gfx_PrintUInt(numWins, 3);
 	
 	gfx_BlitBuffer();
-}
-
-void animateDeal()
-{
-	// // phase 1: deck emerging from bottom of screen
-	// for (unsigned char deckY = GFX_LCD_HEIGHT; deckY >= DEAL_ANIM_DECK_Y; deckY--)
-	// {
-	// 	clock_t frameTimer = clock();
-
-	// 	drawBackground();
-
-	// 	gfx_Sprite(cardSprite[10], DEAL_ANIM_DECK_X, deckY);
-
-	// 	while (clock() - frameTimer < DEAL_ANIM_DECK_FRAME_TIME);
-
-	// 	gfx_BlitBuffer();
-	// }
-
-	// clock_t mainTimer = clock();
-	// while (clock() - mainTimer < DEAL_ANIM_DECK_PAUSE_TIME);
-
-	// // phase 2: cards interpolating between deck and end positions
-	// mainTimer = clock();
-	// bool deckExists = true;
-	// while (clock() - mainTimer < DEAL_ANIM_TOTAL_TIME)
-	// {
-	// 	clock_t frameTimer = clock();
-
-	// 	drawBackground();
-
-	// 	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
-	// 	{
-	// 		for (unsigned char j = 0; tableau[i][j] != 11; j++)
-	// 		{
-	// 			// should this card have even launched yet?
-	// 			const unsigned int delay = (i + j * 8) * DEAL_ANIM_LAUNCH_INTERVAL;
-	// 			if (clock() - mainTimer <= delay) continue;
-
-	// 			// if last card launched, deck sprite disappears
-	// 			if (i == 7 && j == 4) deckExists = false;
-
-	// 			// where is the card going?
-	// 			unsigned char cardEndX = TABL_HPOS + i * (CARD_WIDTH + CARD_SPACING);
-	// 			unsigned char cardEndY = TABL_VPOS + j * CARD_VOFFSET;
-
-	// 			unsigned char cardX, cardY;
-
-	// 			// is this card done traveling yet?
-	// 			if (clock() - mainTimer >= delay + DEAL_ANIM_TRAVEL_TIME)
-	// 			{
-	// 				cardX = cardEndX;
-	// 				cardY = cardEndY;
-	// 			}
-	// 			else
-	// 			{
-	// 				// okay we need to actually interpolate
-	// 				const signed int travelingFor = clock() - mainTimer - delay;
-	// 				const signed char dX = cardEndX - DEAL_ANIM_DECK_X;
-	// 				const signed char dY = cardEndY - DEAL_ANIM_DECK_Y;
-	// 				cardX = DEAL_ANIM_DECK_X + travelingFor * dX / DEAL_ANIM_TRAVEL_TIME;
-	// 				cardY = DEAL_ANIM_DECK_Y + travelingFor * dY / DEAL_ANIM_TRAVEL_TIME;
-	// 			}
-
-	// 			gfx_Sprite(cardSprite[tableau[i][j]], cardX, cardY);
-	// 		}
-	// 	}
-
-	// 	if (deckExists) gfx_Sprite(cardSprite[10], DEAL_ANIM_DECK_X, DEAL_ANIM_DECK_Y);
-
-	// 	while (clock() - frameTimer < DEAL_ANIM_FRAME_TIME);
-
-	// 	gfx_BlitBuffer();
-	// }
 }
