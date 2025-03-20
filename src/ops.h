@@ -25,6 +25,7 @@ bool canGrabCard();
 bool canDropCard();
 bool checkTableauCollapse(unsigned char stackToCheck);
 
+card_t getNewCard();
 void dropCard();
 void maxCursorIndex();
 

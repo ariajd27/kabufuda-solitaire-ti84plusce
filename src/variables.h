@@ -39,6 +39,7 @@
 #define NUMWINS_DISP_X (GFX_LCD_WIDTH - 5 - 3 * TEXT_CHAR_WIDTH)
 
 #define PROGRESS_COMPLETE 4
+#define DECK_ORG 0xff
 
 #define CARD_RED 0x20
 #define CARD_SUIT 0x30

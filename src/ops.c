@@ -77,6 +77,23 @@ bool checkTableauCollapse(unsigned char stackToCheck)
 	return false;
 }
 
+card_t getNewCard()
+{
+	while (true)
+	{
+		card_t card = ((rand() % 13) & 0x3f) | 0x80;
+		if ((card & CARD_NUMBER) >= 13) continue;
+		
+		unsigned char cardIndex = ((card & CARD_SUIT) >> 4) * (card & CARD_NUMBER);
+		unsigned char *deckByte = deck + (cardIndex / 8);
+		unsigned char pokeByte = 0x01 << (cardIndex % 8);
+		if (*deckByte & pokeByte) continue;
+		*deckByte |= pokeByte;
+		deckCards--;
+		return card;
+	}
+}
+
 void dropCard()
 {
 	if (cursorStack == orgStack) return;

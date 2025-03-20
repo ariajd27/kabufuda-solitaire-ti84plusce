@@ -59,7 +59,15 @@ bool doInput()
 			cursorMode = SELECT;
 		}
 	}
-	else if (clear) cursorMode = SELECT;
+	else if (clear)
+	{
+		if (cursorMode == DROP && orgStack != DECK_ORG) cursorMode = SELECT;
+		else if (cursorMode == SELECT)
+		{
+			selectedCard = getNewCard();
+			cursorMode = DROP;
+		}
+	}
 
 	unsigned char prevCursorStack = cursorStack;
 

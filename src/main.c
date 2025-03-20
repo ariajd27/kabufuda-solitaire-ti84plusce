@@ -70,6 +70,8 @@ bool run()
 
 int main(void)
 {
+	srand(rtc_Time());
+
 	gfx_Begin();
 	gfx_SetDrawBuffer();
 	gfx_SetPalette(global_palette, sizeof_global_palette, 0);
