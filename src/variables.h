@@ -20,10 +20,6 @@
 #define WINS_VAR_NAME "KBFDWINS"
 #define SAVE_VAR_NAME "KBFDSAVE"
 
-#define BKGND_COLOR 2
-#define BORDER_COLOR 1
-#define TOP_BORDER 25
-
 #define FRAME_TIME 3277
 #define HOLD_TIME 2
 
@@ -41,6 +37,13 @@
 #define SELCARD_DISP_X 5
 #define SELCARD_DISP_Y 9
 #define NUMWINS_DISP_X (GFX_LCD_WIDTH - 5 - 3 * TEXT_CHAR_WIDTH)
+
+#define PROGRESS_COMPLETE 4
+
+#define CARD_RED 0x20
+#define CARD_SUIT 0x30
+#define CARD_NUMBER 0x0f
+#define CARD_EXISTS 0x80
 
 typedef unsigned char card_t;
 

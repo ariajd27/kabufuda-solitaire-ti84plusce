@@ -20,10 +20,23 @@
 #include <graphx.h>
 #include <gfx/gfx.h>
 
-#define CARD_HEIGHT card1_height
-#define CARD_WIDTH card1_width
+#define CARD_HEIGHT 41
+#define CARD_WIDTH 25
 #define CARD_SPACING 5
 #define CARD_VOFFSET 8
+
+#define CARD_NUMERAL_HOFFSET 1
+#define CARD_NUMERAL_VOFFSET 1
+#define CARD_FSUIT_HOFFSET 2
+#define CARD_FSUIT_VOFFSET 7
+
+#define BKGND_COLOR 3
+#define BORDER_COLOR 0
+#define CARD_COLOR 1
+#define BLACK_COLOR 0
+#define RED_COLOR 2
+
+#define TOP_BORDER 25
 
 extern gfx_sprite_t* cardSprite[11];
 

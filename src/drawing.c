@@ -30,8 +30,6 @@
 #define DEAL_ANIM_FRAME_TIME 250
 #define DEAL_ANIM_LAUNCH_INTERVAL ((DEAL_ANIM_TOTAL_TIME - DEAL_ANIM_TRAVEL_TIME) / 40)
 
-gfx_sprite_t* cardSprite[11];
-
 void drawBackground()
 {
 	gfx_FillScreen(BKGND_COLOR);
@@ -45,6 +43,41 @@ void drawCursor(unsigned char X, unsigned char Y)
 	else gfx_TransparentSprite(drpcorner, X - 2, Y - 2);
 }
 
+void drawMask(unsigned char *data, unsigned char rows, unsigned char x, unsigned char y)
+{
+	unsigned char yy = y;
+
+	for (unsigned char row = 0; row < rows; row++)
+	{
+		unsigned char row_data = data[row];
+
+		for (unsigned char xx = x; xx < x + 8; xx++)
+		{
+			if (row_data & 0x80)
+			{
+				gfx_SetPixel(xx, yy);
+			}
+
+			row_data <<= 1;
+		}
+
+		yy++;
+	}
+}
+
+void drawCard(card_t toDraw, unsigned char x, unsigned char y)
+{
+	if (!(toDraw & CARD_EXISTS)) return;
+
+	gfx_SetColor(CARD_COLOR);
+	gfx_FillRectangle(x, y, CARD_WIDTH, CARD_HEIGHT);
+
+	gfx_SetColor((toDraw & CARD_RED) ? RED_COLOR : BLACK_COLOR);
+
+	drawMask(numerals_tiles_data[toDraw & CARD_NUMBER], 5, x + CARD_NUMERAL_HOFFSET, y + CARD_NUMERAL_VOFFSET);
+	drawMask(small_suits_tiles_data[(toDraw & CARD_SUIT) >> 4], 4, x + CARD_FSUIT_HOFFSET, y + CARD_FSUIT_VOFFSET);
+}
+
 void drawFrame()
 {
 	drawBackground();
@@ -53,14 +86,7 @@ void drawFrame()
 	{
 		unsigned char cardX = FC_HPOS + i * (CARD_WIDTH + CARD_SPACING);
 
-		if (freeCells[i] == 11) gfx_Sprite(freespace, cardX, FC_VPOS);
-		else if (freeCells[i] > 11) gfx_Sprite(cardSprite[10], cardX, FC_VPOS);
-		else gfx_Sprite(cardSprite[freeCells[i]], cardX, FC_VPOS);
-
-		if (i >= fcUnlocked)
-		{
-			gfx_Sprite(lock, cardX + LOCK_ICON_HOFFSET, FC_VPOS + LOCK_ICON_VOFFSET);
-		}
+		drawCard(freeCells[i], cardX, FC_VPOS);
 
 		if (i == cursorStack) drawCursor(cardX, FC_VPOS);
 	}
@@ -72,37 +98,26 @@ void drawFrame()
 			unsigned char cardX = TABL_HPOS + i * (CARD_WIDTH + CARD_SPACING);
 			unsigned char cardY = TABL_VPOS + j * CARD_VOFFSET;
 
-			if (progress < 10) if (i + NUM_FREECELLS == cursorStack) if (j == cursorIndex)
-				drawCursor(cardX, cardY);
-
-			const unsigned char x = tableau[i][j];
-
-			if (x == 11) break;
-			if (x > 11) gfx_Sprite(cardSprite[10], cardX, cardY);
-			else gfx_Sprite(cardSprite[x], cardX, cardY);
+			if (progress < PROGRESS_COMPLETE && i + NUM_FREECELLS == cursorStack && j == cursorIndex) drawCursor(cardX, cardY);
+			
+			drawCard(tableau[i][j], cardX, cardY);
 		}
 	}
 
-	if (progress < 10)
+	if (progress < PROGRESS_COMPLETE)
 	{
 		gfx_SetTextXY(SELCARD_DISP_X, SELCARD_DISP_Y);
-		if (selectedCard != 11)
+		if (selectedCard < 13)
 		{
 			gfx_PrintUInt(selectedCard + 1, 1);
-			if (selectedQty > 1)
-			{
-				gfx_PrintString(" x");
-				gfx_PrintUInt(selectedQty, 1);
-			}
 		}
 		else gfx_PrintString("EMPTY");
+
+		if (cursorMode == SELECT) gfx_PrintStringXY("SELECT", GFX_LCD_WIDTH / 2 - 3 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
+		else gfx_PrintStringXY("DROP", GFX_LCD_WIDTH / 2 - 2 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
 	}
 
-	if (progress == 10)
-		gfx_PrintStringXY("COMPLETE", GFX_LCD_WIDTH / 2 - 4 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
-	else if (cursorMode == SELECT) 
-		gfx_PrintStringXY("SELECT", GFX_LCD_WIDTH / 2 - 3 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
-	else gfx_PrintStringXY("DROP", GFX_LCD_WIDTH / 2 - 2 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
+	else gfx_PrintStringXY("COMPLETE", GFX_LCD_WIDTH / 2 - 4 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
 
 	gfx_SetTextXY(NUMWINS_DISP_X, SELCARD_DISP_Y);
 	gfx_PrintUInt(numWins, 3);
@@ -112,73 +127,73 @@ void drawFrame()
 
 void animateDeal()
 {
-	// phase 1: deck emerging from bottom of screen
-	for (unsigned char deckY = GFX_LCD_HEIGHT; deckY >= DEAL_ANIM_DECK_Y; deckY--)
-	{
-		clock_t frameTimer = clock();
+	// // phase 1: deck emerging from bottom of screen
+	// for (unsigned char deckY = GFX_LCD_HEIGHT; deckY >= DEAL_ANIM_DECK_Y; deckY--)
+	// {
+	// 	clock_t frameTimer = clock();
 
-		drawBackground();
+	// 	drawBackground();
 
-		gfx_Sprite(cardSprite[10], DEAL_ANIM_DECK_X, deckY);
+	// 	gfx_Sprite(cardSprite[10], DEAL_ANIM_DECK_X, deckY);
 
-		while (clock() - frameTimer < DEAL_ANIM_DECK_FRAME_TIME);
+	// 	while (clock() - frameTimer < DEAL_ANIM_DECK_FRAME_TIME);
 
-		gfx_BlitBuffer();
-	}
+	// 	gfx_BlitBuffer();
+	// }
 
-	clock_t mainTimer = clock();
-	while (clock() - mainTimer < DEAL_ANIM_DECK_PAUSE_TIME);
+	// clock_t mainTimer = clock();
+	// while (clock() - mainTimer < DEAL_ANIM_DECK_PAUSE_TIME);
 
-	// phase 2: cards interpolating between deck and end positions
-	mainTimer = clock();
-	bool deckExists = true;
-	while (clock() - mainTimer < DEAL_ANIM_TOTAL_TIME)
-	{
-		clock_t frameTimer = clock();
+	// // phase 2: cards interpolating between deck and end positions
+	// mainTimer = clock();
+	// bool deckExists = true;
+	// while (clock() - mainTimer < DEAL_ANIM_TOTAL_TIME)
+	// {
+	// 	clock_t frameTimer = clock();
 
-		drawBackground();
+	// 	drawBackground();
 
-		for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
-		{
-			for (unsigned char j = 0; tableau[i][j] != 11; j++)
-			{
-				// should this card have even launched yet?
-				const unsigned int delay = (i + j * 8) * DEAL_ANIM_LAUNCH_INTERVAL;
-				if (clock() - mainTimer <= delay) continue;
+	// 	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
+	// 	{
+	// 		for (unsigned char j = 0; tableau[i][j] != 11; j++)
+	// 		{
+	// 			// should this card have even launched yet?
+	// 			const unsigned int delay = (i + j * 8) * DEAL_ANIM_LAUNCH_INTERVAL;
+	// 			if (clock() - mainTimer <= delay) continue;
 
-				// if last card launched, deck sprite disappears
-				if (i == 7 && j == 4) deckExists = false;
+	// 			// if last card launched, deck sprite disappears
+	// 			if (i == 7 && j == 4) deckExists = false;
 
-				// where is the card going?
-				unsigned char cardEndX = TABL_HPOS + i * (CARD_WIDTH + CARD_SPACING);
-				unsigned char cardEndY = TABL_VPOS + j * CARD_VOFFSET;
+	// 			// where is the card going?
+	// 			unsigned char cardEndX = TABL_HPOS + i * (CARD_WIDTH + CARD_SPACING);
+	// 			unsigned char cardEndY = TABL_VPOS + j * CARD_VOFFSET;
 
-				unsigned char cardX, cardY;
+	// 			unsigned char cardX, cardY;
 
-				// is this card done traveling yet?
-				if (clock() - mainTimer >= delay + DEAL_ANIM_TRAVEL_TIME)
-				{
-					cardX = cardEndX;
-					cardY = cardEndY;
-				}
-				else
-				{
-					// okay we need to actually interpolate
-					const signed int travelingFor = clock() - mainTimer - delay;
-					const signed char dX = cardEndX - DEAL_ANIM_DECK_X;
-					const signed char dY = cardEndY - DEAL_ANIM_DECK_Y;
-					cardX = DEAL_ANIM_DECK_X + travelingFor * dX / DEAL_ANIM_TRAVEL_TIME;
-					cardY = DEAL_ANIM_DECK_Y + travelingFor * dY / DEAL_ANIM_TRAVEL_TIME;
-				}
+	// 			// is this card done traveling yet?
+	// 			if (clock() - mainTimer >= delay + DEAL_ANIM_TRAVEL_TIME)
+	// 			{
+	// 				cardX = cardEndX;
+	// 				cardY = cardEndY;
+	// 			}
+	// 			else
+	// 			{
+	// 				// okay we need to actually interpolate
+	// 				const signed int travelingFor = clock() - mainTimer - delay;
+	// 				const signed char dX = cardEndX - DEAL_ANIM_DECK_X;
+	// 				const signed char dY = cardEndY - DEAL_ANIM_DECK_Y;
+	// 				cardX = DEAL_ANIM_DECK_X + travelingFor * dX / DEAL_ANIM_TRAVEL_TIME;
+	// 				cardY = DEAL_ANIM_DECK_Y + travelingFor * dY / DEAL_ANIM_TRAVEL_TIME;
+	// 			}
 
-				gfx_Sprite(cardSprite[tableau[i][j]], cardX, cardY);
-			}
-		}
+	// 			gfx_Sprite(cardSprite[tableau[i][j]], cardX, cardY);
+	// 		}
+	// 	}
 
-		if (deckExists) gfx_Sprite(cardSprite[10], DEAL_ANIM_DECK_X, DEAL_ANIM_DECK_Y);
+	// 	if (deckExists) gfx_Sprite(cardSprite[10], DEAL_ANIM_DECK_X, DEAL_ANIM_DECK_Y);
 
-		while (clock() - frameTimer < DEAL_ANIM_FRAME_TIME);
+	// 	while (clock() - frameTimer < DEAL_ANIM_FRAME_TIME);
 
-		gfx_BlitBuffer();
-	}
+	// 	gfx_BlitBuffer();
+	// }
 }
