@@ -30,6 +30,11 @@
 #define DEAL_ANIM_FRAME_TIME 250
 #define DEAL_ANIM_LAUNCH_INTERVAL ((DEAL_ANIM_TOTAL_TIME - DEAL_ANIM_TRAVEL_TIME) / 40)
 
+// these are used for placing pips on cards
+const unsigned char segments[] = {
+	0x01, 0x24, 0x25, 0x48, 0x49, 0x4a, 0xa8, 0x90, 0x91, 0xb4
+};
+
 void drawBackground()
 {
 	gfx_FillScreen(BKGND_COLOR);
@@ -43,7 +48,7 @@ void drawCursor(unsigned char X, unsigned char Y)
 	else gfx_TransparentSprite(drpcorner, X - 2, Y - 2);
 }
 
-void drawMask(unsigned char *data, unsigned char rows, unsigned char x, unsigned char y)
+void drawMask(const unsigned char *data, unsigned char rows, unsigned char x, unsigned char y)
 {
 	unsigned char yy = y;
 
@@ -74,8 +79,61 @@ void drawCard(card_t toDraw, unsigned char x, unsigned char y)
 
 	gfx_SetColor((toDraw & CARD_RED) ? RED_COLOR : BLACK_COLOR);
 
-	drawMask(numerals_tiles_data[toDraw & CARD_NUMBER], 5, x + CARD_NUMERAL_HOFFSET, y + CARD_NUMERAL_VOFFSET);
-	drawMask(small_suits_tiles_data[(toDraw & CARD_SUIT) >> 4], 4, x + CARD_FSUIT_HOFFSET, y + CARD_FSUIT_VOFFSET);
+	const unsigned char cardNumber = toDraw & CARD_NUMBER;
+	const unsigned char cardSuit = (toDraw & CARD_SUIT) >> 4;
+
+	drawMask(numerals_tiles_data[cardNumber], 5, x + CARD_NUMERAL_HOFFSET, y + CARD_NUMERAL_VOFFSET);
+	drawMask(small_suits_tiles_data[cardSuit], 4, x + CARD_FSUIT_HOFFSET, y + CARD_FSUIT_VOFFSET);
+
+	if (cardNumber < 10)
+	{
+		// this is a number card (A-10) and should have pips
+		unsigned char pipMap = segments[cardNumber];
+		const unsigned char *pipMask = medium_suits_tiles_data[cardSuit];
+
+		// the layout is complicated no matter what...
+		if (pipMap & 0x80)
+		{
+			drawMask(pipMask, 6, x + 7, y + 2);
+			drawMask(pipMask, 6, x + 15, y + 2);
+			drawMask(pipMask, 6, x + 7, y + 12);
+			drawMask(pipMask, 6, x + 15, y + 12);
+		}
+		if (pipMap & 0x40)
+		{
+			drawMask(pipMask, 6, x + 7, y + 7);
+			drawMask(pipMask, 6, x + 15, y + 7);
+		}
+		if (pipMap & 0x20)
+		{
+			drawMask(pipMask, 6, x + 11, y + 7);
+		}
+		if (pipMap & 0x10)
+		{
+			drawMask(pipMask, 6, x + 7, y + 23);
+			drawMask(pipMask, 6, x + 15, y + 23);
+			drawMask(pipMask, 6, x + 7, y + 33);
+			drawMask(pipMask, 6, x + 15, y + 33);
+		}
+		if (pipMap & 0x08)
+		{
+			drawMask(pipMask, 6, x + 7, y + 28);
+			drawMask(pipMask, 6, x + 15, y + 28);
+		}
+		if (pipMap & 0x04)
+		{
+			drawMask(pipMask, 6, x + 11, y + 28);
+		}
+		if (pipMap & 0x02)
+		{
+			drawMask(pipMask, 6, x + 7, y + 17);
+			drawMask(pipMask, 6, x + 15, y + 17);
+		}
+		if (pipMap & 0x01)
+		{
+			drawMask(pipMask, 6, x + 11, y + 17);
+		}
+	}
 }
 
 void drawDeck()

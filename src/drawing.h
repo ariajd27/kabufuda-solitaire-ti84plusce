@@ -21,20 +21,20 @@
 #include <gfx/gfx.h>
 
 #define CARD_HEIGHT 41
-#define CARD_WIDTH 25
+#define CARD_WIDTH 27
 #define CARD_SPACING 5
-#define CARD_VOFFSET 8
+#define CARD_VOFFSET 7
 
 #define CARD_NUMERAL_HOFFSET 1
 #define CARD_NUMERAL_VOFFSET 1
-#define CARD_FSUIT_HOFFSET 2
+#define CARD_FSUIT_HOFFSET 1
 #define CARD_FSUIT_VOFFSET 7
 #define LOCK_ICON_VOFFSET 17
 #define LOCK_ICON_HOFFSET 9
 #define FC_VPOS 50
 #define TABL_VPOS 100
-#define FC_HPOS 102
-#define TABL_HPOS 102
+#define FC_HPOS 98
+#define TABL_HPOS 98
 
 #define TEXT_CHAR_WIDTH 8
 #define SELCARD_DISP_X 5

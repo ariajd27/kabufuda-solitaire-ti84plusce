@@ -83,6 +83,7 @@ bool removeFromDeck(card_t toRemove)
 	unsigned char *deckByte = deck + (cardIndex / 8);
 	unsigned char pokeByte = 0x01 << (cardIndex % 8);
 	if (*deckByte & pokeByte) return true;
+	
 	*deckByte |= pokeByte;
 	deckCards--;
 	return false;

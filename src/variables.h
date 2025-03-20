@@ -25,7 +25,7 @@
 
 #define NUM_FREECELLS 4
 #define NUM_TABLSLOTS 4
-#define TABL_STACK_SIZE 16
+#define TABL_STACK_SIZE 12
 
 #define PROGRESS_COMPLETE 4
 #define DECK_ORG 0xff
