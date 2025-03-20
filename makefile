@@ -2,9 +2,8 @@
 # Makefile Options
 # ----------------------------
 
-NAME = KBFDSLTR
-ICON = icon.png
-DESCRIPTION = "Zachtronics's Kabufuda Solitaire"
+NAME = CALCSLTR
+DESCRIPTION = "Calculation Solitaire"
 COMPRESSED = NO
 ARCHIVED = NO
 
@@ -16,4 +15,4 @@ CXXFLAGS = -Wall -Wextra -Oz
 include $(shell cedev-config --makefile)
 
 group::
-	convbin -j 8x -i src/gfx/KBFDGFX.8xv -i bin/KBFDSLTR.8xp -k 8xg-auto-extract -o bin/KBFDSLTR.8xg -n KBFDSLTR
+	convbin -j 8x -i src/gfx/CALCGFX.8xv -i bin/CALCSLTR.8xp -k 8xg-auto-extract -o bin/CALCSLTR.8xg -n CALCSLTR

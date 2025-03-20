@@ -33,14 +33,6 @@ unsigned char orgIndex;
 void start()
 {
 	loadWins();
-
-	// fill tableau and free cells with empty space
-	for (unsigned char i = 0; i < NUM_FREECELLS; i++) 
-		freeCells[i] = 11;
-	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
-		for (unsigned char j = 0; j < TABL_STACK_SIZE; j++)
-			tableau[i][j] = 11;
-
 	load(); // will call deal() as well if necessary
 
 	// set initial variables
@@ -52,7 +44,7 @@ void start()
 
 bool canGrabCard()
 {
-	if (cursorStack < NUM_FREECELLS) return freeCells[cursorStack] < 11;
+	if (cursorStack < NUM_FREECELLS) return false;
 
 	if (tableau[cursorStack - NUM_FREECELLS][0] > 11) return false;
 	for (unsigned char i = cursorIndex + 1; i < TABL_STACK_SIZE; i++)
@@ -67,16 +59,7 @@ bool canGrabCard()
 
 bool canDropCard()
 {
-	if (cursorStack < NUM_FREECELLS) 
-	{
-		const unsigned char x = freeCells[cursorStack];
-		if (cursorStack < fcUnlocked)
-		{
-			if (selectedQty == 1 || selectedQty == 4) return x == 11;
-			else return x == selectedCard && selectedQty == 3;
-		}
-		else return false;
-	}
+	if (cursorStack < NUM_FREECELLS && freeCells[cursorStack] != 12) return selectedCard == (cursorStack + freeCells[cursorStack]) % 13;
 	else if (cursorIndex == 0) return true;
 	else return tableau[cursorStack - NUM_FREECELLS][cursorIndex - 1] == selectedCard;
 }

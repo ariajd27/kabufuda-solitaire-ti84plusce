@@ -28,8 +28,8 @@
 #define HOLD_TIME 2
 
 #define NUM_FREECELLS 4
-#define NUM_TABLSLOTS 8
-#define TABL_STACK_SIZE 8
+#define NUM_TABLSLOTS 4
+#define TABL_STACK_SIZE 16
 #define LOCK_ICON_VOFFSET 17
 #define LOCK_ICON_HOFFSET 9
 #define FC_VPOS 50
@@ -42,15 +42,17 @@
 #define SELCARD_DISP_Y 9
 #define NUMWINS_DISP_X (GFX_LCD_WIDTH - 5 - 3 * TEXT_CHAR_WIDTH)
 
-extern unsigned char tableau[NUM_TABLSLOTS][TABL_STACK_SIZE];
-extern unsigned char freeCells[NUM_FREECELLS];
-extern unsigned char fcUnlocked;
+typedef unsigned char card_t;
+
+extern card_t tableau[NUM_TABLSLOTS][TABL_STACK_SIZE];
+extern card_t freeCells[NUM_FREECELLS];
+// extern unsigned char fcUnlocked;
 
 extern unsigned char cursorStack;
 extern unsigned char cursorIndex;
 extern enum cursorMode_t { SELECT, DROP } cursorMode;
 extern unsigned char selectedCard;
-extern unsigned char selectedQty;
+// extern unsigned char selectedQty;
 extern unsigned char orgStack;
 extern unsigned char orgIndex;
 

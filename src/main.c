@@ -26,9 +26,9 @@
 #include "save.h"
 #include "ops.h"
 
-unsigned char tableau[NUM_TABLSLOTS][TABL_STACK_SIZE];
-unsigned char freeCells[NUM_FREECELLS];
-unsigned char fcUnlocked;
+card_t tableau[NUM_TABLSLOTS][TABL_STACK_SIZE];
+card_t freeCells[NUM_FREECELLS];
+// unsigned char fcUnlocked;
 unsigned char progress;
 unsigned char numWins;
 
@@ -45,7 +45,7 @@ bool run()
 		while (clock() - frameTimer < FRAME_TIME);
 	}
 
-	if (progress == 10)
+	if (progress == 4)
 	{
 		// this way we know not to try to resume
 		deleteSave();
