@@ -1,5 +1,5 @@
-// Kabufuda Solitaire / KBFDSLTR for the TI-84 Plus CE
-// Copyright (C) 2024 euphory
+// Calculation Solitaire / CALCSLTR for the TI-84 Plus CE
+// Copyright (C) 2025 euphory
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
