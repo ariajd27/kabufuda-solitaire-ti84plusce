@@ -45,7 +45,8 @@ void start()
 bool canGrabCard()
 {
 	if (cursorStack < NUM_FREECELLS) return false;
-	else return !(tableau[cursorStack - NUM_FREECELLS][cursorIndex + 1] & CARD_EXISTS);
+	else if (tableau[cursorStack - NUM_FREECELLS][cursorIndex + 1] & CARD_EXISTS) return false;
+	else return tableau[cursorStack - NUM_FREECELLS][cursorIndex] & CARD_EXISTS;
 }
 
 bool canDropCard()
@@ -99,5 +100,5 @@ void maxCursorIndex()
 	if (cursorStack < NUM_FREECELLS) return;
 
 	cursorIndex = 0;
-	while (tableau[cursorStack - NUM_FREECELLS][cursorIndex] & CARD_EXISTS) cursorIndex++;
+	while (tableau[cursorStack - NUM_FREECELLS][cursorIndex + 1] & CARD_EXISTS) cursorIndex++;
 }

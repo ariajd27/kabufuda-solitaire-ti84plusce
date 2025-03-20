@@ -38,15 +38,19 @@ bool doInput()
 	right = kb_IsDown(kb_KeyRight) ? right + 1 : 0;
 
 	const bool select = (kb_IsDown(kb_Key2nd) && !prevSecond);
-	const bool alpha = (kb_IsDown(kb_KeyAlpha) && !prevAlpha);
+	const bool draw = (kb_IsDown(kb_KeyAlpha) && !prevAlpha);
 	const bool clear = (kb_IsDown(kb_KeyClear) && !prevClear);
 
 	if (select)
 	{
 		if (cursorMode == SELECT && canGrabCard())
 		{
-			orgStack = cursorStack;
+			orgStack = cursorStack - NUM_FREECELLS;
 			orgIndex = cursorIndex;
+
+			selectedCard = tableau[cursorStack - NUM_FREECELLS][cursorIndex];
+			tableau[cursorStack - NUM_FREECELLS][cursorIndex] = CARD_EMPTY;
+
 			cursorMode = DROP;
 		}
 		else if (canDropCard())
@@ -63,11 +67,13 @@ bool doInput()
 	{
 		if (orgStack != DECK_ORG)
 		{
+			tableau[orgStack][orgIndex] = selectedCard;
+
 			cursorMode = SELECT;
 			selectedCard = CARD_EMPTY;
 		}
 	}
-	else if (alpha)
+	else if (draw)
 	{
 		if (cursorMode == SELECT)
 		{
@@ -81,7 +87,7 @@ bool doInput()
 
 	if (down == 1 || down > HOLD_TIME)
 	{
-		cursorIndex++;
+		if (cursorStack < NUM_FREECELLS || !(tableau[cursorStack][cursorIndex + 1] & CARD_EXISTS)) cursorIndex++;
 	}
 	else if (left == 1 || left > HOLD_TIME)
 	{
@@ -104,30 +110,12 @@ bool doInput()
 	}
 	else if (cursorMode == DROP)
 	{
-		// if dropping cards, the cursor should always be at the top of the stack it's on
-		// except maxCursorIndex() doesn't work so well on empty tableau stacks
-		if (cursorStack != orgStack)
-		{
-			if (tableau[cursorStack - NUM_FREECELLS][0] == 11)
-			{
-				cursorIndex = 0;
-			}
-			else
-			{
-				maxCursorIndex();
-				if (cursorIndex > 0) cursorIndex++;
-			}
-		}
-		else cursorIndex = orgIndex; // also this makes it more clear if we are trying to drop
-									 // back on the original cards
+		maxCursorIndex();
+		if (cursorStack >= NUM_FREECELLS && (tableau[cursorStack - NUM_FREECELLS][0] & CARD_EXISTS)) cursorIndex++;
 	}
 	else if (cursorStack != prevCursorStack)
 	{
 		maxCursorIndex();
-	}
-	else
-	{
-		while (!(tableau[cursorStack][cursorIndex] & CARD_EXISTS) && cursorIndex > 0) cursorIndex--;
 	}
 
 	if (kb_IsDown(kb_KeyDel))

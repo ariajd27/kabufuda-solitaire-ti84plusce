@@ -140,7 +140,7 @@ void drawFrame()
 					break;
 			}
 
-			drawCard(selectedCard, SELCARD_DISP_X, SELCARD_DISP_Y);
+			if (cursorMode == DROP) drawCard(selectedCard, SELCARD_DISP_X, SELCARD_DISP_Y);
 		}
 		else gfx_PrintString("EMPTY");
 
