@@ -19,6 +19,7 @@
 
 #include <graphx.h>
 #include <gfx/gfx.h>
+#include "variables.h"
 
 #define CARD_HEIGHT 41
 #define CARD_WIDTH 27

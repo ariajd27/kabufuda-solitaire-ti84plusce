@@ -17,8 +17,6 @@ converts:
     palette: global_palette
     transparent-color-index: 3
     images:
-      - selcorner.png
-      - drpcorner.png
       - card_back.png
       - crown.png
   - name: numerals
@@ -51,6 +49,7 @@ converts:
       tile-height: 6
       images:
        - medium_suits.png
+       - selcorner.png
 
 outputs:
   - type: c

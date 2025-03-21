@@ -35,12 +35,6 @@ const unsigned char segments[] = {
 	0x01, 0x24, 0x25, 0x48, 0x49, 0x4a, 0xa8, 0x90, 0x91, 0xb4
 };
 
-void drawCursor(unsigned char X, unsigned char Y)
-{
-	if (cursorMode == SELECT) gfx_TransparentSprite(selcorner, X - 2, Y - 2);
-	else gfx_TransparentSprite(drpcorner, X - 2, Y - 2);
-}
-
 void drawMask(const unsigned char *data, unsigned char rows, unsigned int x, unsigned char y)
 {
 	unsigned char yy = y;
@@ -83,6 +77,16 @@ void drawMaskInverted(const unsigned char *data, unsigned char rows, unsigned in
 
 		yy++;
 	}
+}
+
+void drawCursor(unsigned char X, unsigned char Y)
+{
+	gfx_SetColor(cursorMode == SELECT ? BLACK_COLOR : RED_COLOR);
+
+	drawMask(selcorner_tile_0_data, 6, X - 2, Y - 2);
+	drawMask(selcorner_tile_1_data, 6, X + CARD_WIDTH - 4, Y - 2);
+	drawMaskInverted(selcorner_tile_1_data, 6, X + 4, Y + CARD_HEIGHT + 2);
+	drawMaskInverted(selcorner_tile_0_data, 6, X + CARD_WIDTH + 2, Y + CARD_HEIGHT + 2);
 }
 
 void drawCard(card_t toDraw, unsigned int x, unsigned char y)

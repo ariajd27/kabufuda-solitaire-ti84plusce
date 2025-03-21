@@ -1,9 +1,5 @@
 global_palette.h
 global_palette.c
-selcorner.h
-selcorner.c
-drpcorner.h
-drpcorner.c
 card_back.h
 card_back.c
 crown.h
@@ -14,4 +10,6 @@ small_suits.h
 small_suits.c
 medium_suits.h
 medium_suits.c
+selcorner.h
+selcorner.c
 gfx.h
