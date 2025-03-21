@@ -167,6 +167,7 @@ void drawCard(card_t toDraw, unsigned char x, unsigned char y)
 
 void drawDeck()
 {
+	if (deckCards == 0) return;
 	unsigned char y = DECK_VPOS;
 	for (unsigned char x = 0; x <= deckCards; x += DECK_CARDS_PER_HEIGHT)
 	{

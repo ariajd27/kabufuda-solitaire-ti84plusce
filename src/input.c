@@ -71,7 +71,7 @@ bool doInput()
 	}
 	else if (draw)
 	{
-		if (cursorMode == SELECT)
+		if (cursorMode == SELECT && deckCards > 0)
 		{
 			selectedCard = getNewCard();
 			orgStack = DECK_ORG;
