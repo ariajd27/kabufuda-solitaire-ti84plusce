@@ -188,6 +188,8 @@ void drawBar()
 	gfx_SetColor(BORDER_COLOR);
 	gfx_FillRectangle(0, 0, GFX_LCD_WIDTH, TOP_BORDER);
 
+	gfx_SetTextFGColor(BLACK_COLOR);
+
 	if (progress < PROGRESS_COMPLETE)
 	{
 		if ((selectedCard & CARD_EXISTS) && cursorMode == DROP) drawCard(selectedCard, SELCARD_XPOS, SELCARD_YPOS);
