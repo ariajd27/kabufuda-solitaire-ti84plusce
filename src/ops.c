@@ -74,7 +74,7 @@ card_t getNewCard()
 {
 	while (true)
 	{
-		card_t card = (((rand() % 4) << 4) + (rand() % 13)) | CARD_EXISTS;
+		card_t card = (rand() & CARD_SUIT) | (rand() % 13) | CARD_EXISTS;
 		
 		if (removeFromDeck(card)) continue;
 		return card;
@@ -83,7 +83,7 @@ card_t getNewCard()
 
 bool removeFromDeck(card_t toRemove)
 {
-	unsigned char cardIndex = ((toRemove & CARD_SUIT) >> 4) * (toRemove & CARD_NUMBER);
+	unsigned char cardIndex = ((toRemove & CARD_SUIT) >> 4) * 13 + (toRemove & CARD_NUMBER);
 	unsigned char *deckByte = deck + (cardIndex / 8);
 	unsigned char pokeByte = 0x01 << (cardIndex % 8);
 	if (*deckByte & pokeByte) return true;
