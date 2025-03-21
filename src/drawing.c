@@ -48,7 +48,7 @@ void drawCursor(unsigned char X, unsigned char Y)
 	else gfx_TransparentSprite(drpcorner, X - 2, Y - 2);
 }
 
-void drawMask(const unsigned char *data, unsigned char rows, unsigned char x, unsigned char y)
+void drawMask(const unsigned char *data, unsigned char rows, unsigned int x, unsigned char y)
 {
 	unsigned char yy = y;
 
@@ -56,7 +56,7 @@ void drawMask(const unsigned char *data, unsigned char rows, unsigned char x, un
 	{
 		unsigned char row_data = data[row];
 
-		for (unsigned char xx = x; xx < x + 8; xx++)
+		for (unsigned int xx = x; xx < x + 8; xx++)
 		{
 			if (row_data & 0x80)
 			{
@@ -70,7 +70,7 @@ void drawMask(const unsigned char *data, unsigned char rows, unsigned char x, un
 	}
 }
 
-void drawMaskInverted(const unsigned char *data, unsigned char rows, unsigned char x, unsigned char y)
+void drawMaskInverted(const unsigned char *data, unsigned char rows, unsigned int x, unsigned char y)
 {
 	unsigned char yy = y - rows;
 
@@ -78,7 +78,7 @@ void drawMaskInverted(const unsigned char *data, unsigned char rows, unsigned ch
 	{
 		unsigned char row_data = data[rows - row];
 
-		for (unsigned char xx = x - 8; xx < x; xx++)
+		for (unsigned int xx = x - 8; xx < x; xx++)
 		{
 			if (row_data & 0x01)
 			{
@@ -92,7 +92,7 @@ void drawMaskInverted(const unsigned char *data, unsigned char rows, unsigned ch
 	}
 }
 
-void drawCard(card_t toDraw, unsigned char x, unsigned char y)
+void drawCard(card_t toDraw, unsigned int x, unsigned char y)
 {
 	if (!(toDraw & CARD_EXISTS)) return;
 
@@ -117,6 +117,7 @@ void drawCard(card_t toDraw, unsigned char x, unsigned char y)
 		const unsigned char *pipMask = medium_suits_tiles_data[cardSuit];
 
 		// the layout is complicated no matter what...
+		// i do plan to simplify it later though to atl not have the 100000 function calls
 		if (pipMap & 0x80)
 		{
 			drawMask(pipMask, 6, x + 7, y + 2);
@@ -206,31 +207,7 @@ void drawFrame()
 
 	if (progress < PROGRESS_COMPLETE)
 	{
-		gfx_SetTextXY(SELCARD_DISP_X, SELCARD_DISP_Y);
-		if (selectedCard & CARD_EXISTS)
-		{
-			gfx_PrintUInt((selectedCard & CARD_NUMBER) + 1, 1);
-			gfx_PrintString("OF ");
-
-			switch ((selectedCard & CARD_SUIT) >> 4)
-			{
-				case 0:
-					gfx_PrintString("SPADES");
-					break;
-				case 1:
-					gfx_PrintString("CLUBS");
-					break;
-				case 2:
-					gfx_PrintString("HEARTS");
-					break;
-				case 3:
-					gfx_PrintString("DIAMONDS");
-					break;
-			}
-
-			if (cursorMode == DROP) drawCard(selectedCard, SELCARD_DISP_X, SELCARD_DISP_Y);
-		}
-		else gfx_PrintString("EMPTY");
+		if ((selectedCard & CARD_EXISTS) && cursorMode == DROP) drawCard(selectedCard, SELCARD_XPOS, SELCARD_YPOS);
 
 		if (cursorMode == SELECT) gfx_PrintStringXY("SELECT", GFX_LCD_WIDTH / 2 - 3 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
 		else gfx_PrintStringXY("DROP", GFX_LCD_WIDTH / 2 - 2 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
