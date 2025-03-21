@@ -17,11 +17,10 @@ converts:
     palette: global_palette
     transparent-color-index: 3
     images:
-      - freespace.png
-      - lock.png
       - selcorner.png
       - drpcorner.png
       - card_back.png
+      - crown.png
   - name: numerals
     style: palette
     bpp: 1

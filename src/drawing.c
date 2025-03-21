@@ -134,6 +134,10 @@ void drawCard(card_t toDraw, unsigned char x, unsigned char y)
 			drawMask(pipMask, 6, x + 11, y + 17);
 		}
 	}
+	else
+	{
+		gfx_Sprite(crown, x + 7, y + 17);
+	}
 }
 
 void drawDeck()
