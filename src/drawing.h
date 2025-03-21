@@ -54,7 +54,7 @@
 #define DECK_CARDS_PER_HEIGHT 9
 
 #define SELCARD_XPOS 147
-#define SELCARD_YPOS 220
+#define SELCARD_YPOS 210
 
 extern gfx_sprite_t* cardSprite[11];
 
