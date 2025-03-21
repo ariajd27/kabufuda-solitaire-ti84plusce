@@ -58,8 +58,10 @@
 
 extern gfx_sprite_t* cardSprite[11];
 
-void drawBackground();
 void drawCursor(unsigned char X, unsigned char Y);
+void drawCard(card_t toDraw, unsigned int x, unsigned char y);
+void drawStack(unsigned char stackIndex);
+void drawBar();
 void drawFrame();
 
 #endif

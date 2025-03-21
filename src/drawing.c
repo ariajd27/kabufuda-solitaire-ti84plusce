@@ -35,13 +35,6 @@ const unsigned char segments[] = {
 	0x01, 0x24, 0x25, 0x48, 0x49, 0x4a, 0xa8, 0x90, 0x91, 0xb4
 };
 
-void drawBackground()
-{
-	gfx_FillScreen(BKGND_COLOR);
-	gfx_SetColor(BORDER_COLOR);
-	gfx_FillRectangle(0, 0, GFX_LCD_WIDTH, TOP_BORDER);
-}
-
 void drawCursor(unsigned char X, unsigned char Y)
 {
 	if (cursorMode == SELECT) gfx_TransparentSprite(selcorner, X - 2, Y - 2);
@@ -177,9 +170,41 @@ void drawDeck()
 	}
 }
 
+void drawStack(unsigned char stackIndex)
+{
+	for (unsigned char j = 0; j < TABL_STACK_SIZE; j++)
+	{
+		unsigned char cardX = TABL_HPOS + stackIndex * (CARD_WIDTH + CARD_SPACING);
+		unsigned char cardY = TABL_VPOS + j * CARD_VOFFSET;
+
+		if (progress < PROGRESS_COMPLETE && stackIndex + NUM_FREECELLS == cursorStack && j == cursorIndex) drawCursor(cardX, cardY);
+		
+		drawCard(tableau[stackIndex][j], cardX, cardY);
+	}
+}
+
+void drawBar()
+{
+	gfx_SetColor(BORDER_COLOR);
+	gfx_FillRectangle(0, 0, GFX_LCD_WIDTH, TOP_BORDER);
+
+	if (progress < PROGRESS_COMPLETE)
+	{
+		if ((selectedCard & CARD_EXISTS) && cursorMode == DROP) drawCard(selectedCard, SELCARD_XPOS, SELCARD_YPOS);
+
+		if (cursorMode == SELECT) gfx_PrintStringXY("SELECT", GFX_LCD_WIDTH / 2 - 3 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
+		else gfx_PrintStringXY("DROP", GFX_LCD_WIDTH / 2 - 2 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
+	}
+
+	else gfx_PrintStringXY("COMPLETE", GFX_LCD_WIDTH / 2 - 4 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
+
+	gfx_SetTextXY(NUMWINS_DISP_X, SELCARD_DISP_Y);
+	gfx_PrintUInt(numWins, 3);
+}
+
 void drawFrame()
 {
-	drawBackground();
+	gfx_FillScreen(BKGND_COLOR);
 
 	drawDeck();
 
@@ -194,29 +219,10 @@ void drawFrame()
 
 	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
 	{
-		for (unsigned char j = 0; j < TABL_STACK_SIZE; j++)
-		{
-			unsigned char cardX = TABL_HPOS + i * (CARD_WIDTH + CARD_SPACING);
-			unsigned char cardY = TABL_VPOS + j * CARD_VOFFSET;
-
-			if (progress < PROGRESS_COMPLETE && i + NUM_FREECELLS == cursorStack && j == cursorIndex) drawCursor(cardX, cardY);
-			
-			drawCard(tableau[i][j], cardX, cardY);
-		}
+		drawStack(i);		
 	}
 
-	if (progress < PROGRESS_COMPLETE)
-	{
-		if ((selectedCard & CARD_EXISTS) && cursorMode == DROP) drawCard(selectedCard, SELCARD_XPOS, SELCARD_YPOS);
-
-		if (cursorMode == SELECT) gfx_PrintStringXY("SELECT", GFX_LCD_WIDTH / 2 - 3 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
-		else gfx_PrintStringXY("DROP", GFX_LCD_WIDTH / 2 - 2 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
-	}
-
-	else gfx_PrintStringXY("COMPLETE", GFX_LCD_WIDTH / 2 - 4 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
-
-	gfx_SetTextXY(NUMWINS_DISP_X, SELCARD_DISP_Y);
-	gfx_PrintUInt(numWins, 3);
+	drawBar();
 	
 	gfx_BlitBuffer();
 }
