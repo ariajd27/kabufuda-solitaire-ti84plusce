@@ -70,6 +70,28 @@ void drawMask(const unsigned char *data, unsigned char rows, unsigned char x, un
 	}
 }
 
+void drawMaskInverted(const unsigned char *data, unsigned char rows, unsigned char x, unsigned char y)
+{
+	unsigned char yy = y - rows;
+
+	for (unsigned char row = 1; row <= rows; row++)
+	{
+		unsigned char row_data = data[rows - row];
+
+		for (unsigned char xx = x - 8; xx < x; xx++)
+		{
+			if (row_data & 0x01)
+			{
+				gfx_SetPixel(xx, yy);
+			}
+
+			row_data >>= 1;
+		}
+
+		yy++;
+	}
+}
+
 void drawCard(card_t toDraw, unsigned char x, unsigned char y)
 {
 	if (!(toDraw & CARD_EXISTS)) return;
@@ -84,6 +106,9 @@ void drawCard(card_t toDraw, unsigned char x, unsigned char y)
 
 	drawMask(numerals_tiles_data[cardNumber], 5, x + CARD_NUMERAL_HOFFSET, y + CARD_NUMERAL_VOFFSET);
 	drawMask(small_suits_tiles_data[cardSuit], 4, x + CARD_FSUIT_HOFFSET, y + CARD_FSUIT_VOFFSET);
+
+	drawMaskInverted(numerals_tiles_data[cardNumber], 5, x + CARD_WIDTH - CARD_NUMERAL_HOFFSET, y + CARD_HEIGHT - CARD_NUMERAL_VOFFSET);
+	drawMaskInverted(small_suits_tiles_data[cardSuit], 4, x + CARD_WIDTH - CARD_FSUIT_HOFFSET, y + CARD_HEIGHT - CARD_FSUIT_VOFFSET);
 
 	if (cardNumber < 10)
 	{
@@ -110,19 +135,19 @@ void drawCard(card_t toDraw, unsigned char x, unsigned char y)
 		}
 		if (pipMap & 0x10)
 		{
-			drawMask(pipMask, 6, x + 7, y + 23);
-			drawMask(pipMask, 6, x + 15, y + 23);
-			drawMask(pipMask, 6, x + 7, y + 33);
-			drawMask(pipMask, 6, x + 15, y + 33);
+			drawMaskInverted(pipMask, 6, x + 12, y + 29);
+			drawMaskInverted(pipMask, 6, x + 20, y + 29);
+			drawMaskInverted(pipMask, 6, x + 12, y + 39);
+			drawMaskInverted(pipMask, 6, x + 20, y + 39);
 		}
 		if (pipMap & 0x08)
 		{
-			drawMask(pipMask, 6, x + 7, y + 28);
-			drawMask(pipMask, 6, x + 15, y + 28);
+			drawMaskInverted(pipMask, 6, x + 12, y + 34);
+			drawMaskInverted(pipMask, 6, x + 20, y + 34);
 		}
 		if (pipMap & 0x04)
 		{
-			drawMask(pipMask, 6, x + 11, y + 28);
+			drawMaskInverted(pipMask, 6, x + 16, y + 34);
 		}
 		if (pipMap & 0x02)
 		{
