@@ -56,6 +56,10 @@ bool canDropCard()
 		if ((freeCells[cursorStack] & CARD_NUMBER) == CARD_KING) return false;
 		else return (selectedCard & CARD_NUMBER) == (cursorStack + (freeCells[cursorStack] & CARD_NUMBER) + 1) % 13;
 	}
+	else if (orgStack != DECK_ORG)
+	{
+		return false;
+	}
 	else if (cursorIndex == 0)
 	{
 		return true;
