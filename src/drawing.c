@@ -79,8 +79,22 @@ void drawMaskInverted(const unsigned char *data, unsigned char rows, unsigned in
 	}
 }
 
-void drawCursor(unsigned char X, unsigned char Y)
+void drawCursor()
 {
+	unsigned int X;
+	unsigned char Y;
+
+	if (cursorStack < NUM_FREECELLS)
+	{
+		X = FC_HPOS + cursorStack * (CARD_WIDTH + CARD_SPACING);
+		Y = FC_VPOS;
+	}
+	else
+	{
+		X = TABL_HPOS + (cursorStack - NUM_FREECELLS) * (CARD_WIDTH + CARD_SPACING);
+		Y = TABL_VPOS + cursorIndex * CARD_VOFFSET;
+	}
+
 	gfx_SetColor(cursorMode == SELECT ? BLACK_COLOR : RED_COLOR);
 
 	drawMask(selcorner_tile_0_data, 6, X - 2, Y - 2);
@@ -180,8 +194,6 @@ void drawStack(unsigned char stackIndex)
 	{
 		unsigned char cardX = TABL_HPOS + stackIndex * (CARD_WIDTH + CARD_SPACING);
 		unsigned char cardY = TABL_VPOS + j * CARD_VOFFSET;
-
-		if (progress < PROGRESS_COMPLETE && stackIndex + NUM_FREECELLS == cursorStack && j == cursorIndex) drawCursor(cardX, cardY);
 		
 		drawCard(tableau[stackIndex][j], cardX, cardY);
 	}
@@ -212,23 +224,12 @@ void drawFrame()
 {
 	gfx_FillScreen(BKGND_COLOR);
 
+	for (unsigned char i = 0; i < NUM_FREECELLS; i++) drawCard(freeCells[i], FC_HPOS + i * (CARD_WIDTH + CARD_SPACING), FC_VPOS);
+	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++) drawStack(i);
+
 	drawDeck();
-
-	for (unsigned char i = 0; i < NUM_FREECELLS; i++)
-	{
-		unsigned char cardX = FC_HPOS + i * (CARD_WIDTH + CARD_SPACING);
-
-		drawCard(freeCells[i], cardX, FC_VPOS);
-
-		if (i == cursorStack) drawCursor(cardX, FC_VPOS);
-	}
-
-	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
-	{
-		drawStack(i);		
-	}
-
 	drawBar();
+	drawCursor();
 	
 	gfx_BlitBuffer();
 }
