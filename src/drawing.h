@@ -68,10 +68,14 @@ void drawCard(card_t toDraw, unsigned int x, unsigned char y);
 void drawStack(unsigned char stackIndex);
 void drawBar();
 void drawFrame(bool drawSelected);
-void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned char y1);
+void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned char y1, bool faceDown);
 
-#define animateGrab() animateMove(getCursorX(), getCursorY(), SELCARD_XPOS, SELCARD_YPOS)
-#define animateDrop() animateMove(SELCARD_XPOS, SELCARD_YPOS, getCursorX(), getCursorY())
-#define animateDraw() animateMove(DECK_HPOS, DECK_VPOS, SELCARD_XPOS, SELCARD_YPOS)
+#define getOrgX() (TABL_HPOS + (orgStack - NUM_FREECELLS) * (CARD_WIDTH + CARD_SPACING))
+#define getOrgY() (TABL_VPOS + orgIndex * CARD_VOFFSET)
+
+#define animateGrab() animateMove(getCursorX(), getCursorY(), SELCARD_XPOS, SELCARD_YPOS, false)
+#define animateDrop() animateMove(SELCARD_XPOS, SELCARD_YPOS, getCursorX(), getCursorY(), false)
+#define animateDraw() animateMove(DECK_HPOS, DECK_VPOS, SELCARD_XPOS, SELCARD_YPOS, true)
+#define animateClear() animateMove(SELCARD_XPOS, SELCARD_YPOS, getOrgX(), getOrgY(), false)
 
 #endif

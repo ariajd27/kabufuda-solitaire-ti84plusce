@@ -124,6 +124,12 @@ void dropCard()
 	if (progress == PROGRESS_COMPLETE && prevProgress < PROGRESS_COMPLETE) numWins++;
 }
 
+void clearCard()
+{
+	animateClear();
+	tableau[orgStack - NUM_FREECELLS][orgIndex] = selectedCard;
+}
+
 void maxCursorIndex()
 {
 	if (cursorStack < NUM_FREECELLS) return;

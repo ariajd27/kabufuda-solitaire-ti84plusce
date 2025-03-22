@@ -58,10 +58,8 @@ bool doInput()
 	{
 		if (orgStack != DECK_ORG)
 		{
-			tableau[orgStack][orgIndex] = selectedCard;
-
+			clearCard();
 			cursorMode = SELECT;
-			selectedCard = CARD_EMPTY;
 		}
 	}
 	else if (draw)

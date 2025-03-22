@@ -234,7 +234,7 @@ void drawFrame(bool drawSelected)
 	gfx_BlitBuffer();
 }
 
-void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned char y1)
+void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned char y1, bool faceDown)
 {
 	const bool flipX = x0 > x1;
 	const bool flipY = y0 > y1;
@@ -270,7 +270,14 @@ void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned ch
 		const unsigned char cardY =  flipY ? y1 - dy : y0 + dy;
 
 		gfx_GetSprite(spriteBuffer, cardX, cardY);
-		drawCard(selectedCard, cardX, cardY);
+		if (faceDown)
+		{
+			gfx_Sprite(card_back, cardX, cardY);
+		}
+		else
+		{
+			drawCard(selectedCard, cardX, cardY);
+		}
 		gfx_BlitBuffer();
 		gfx_Sprite(spriteBuffer, cardX, cardY);
 	}
