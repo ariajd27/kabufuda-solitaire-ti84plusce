@@ -64,7 +64,7 @@ extern gfx_sprite_t* cardSprite[11];
 unsigned int getCursorX();
 unsigned char getCursorY();
 void drawCursor();
-void drawCard(card_t toDraw, unsigned int x, unsigned char y);
+void drawCard(card_t toDraw, unsigned int x, unsigned char y, bool useCutoff);
 void drawStack(unsigned char stackIndex);
 void drawBar();
 void drawFrame(bool drawSelected);

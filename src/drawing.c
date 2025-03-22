@@ -104,7 +104,7 @@ void drawCursor()
 	drawMaskInverted(selcorner_tile_0_data, 6, X + CARD_WIDTH + 2, Y + CARD_HEIGHT + 2);
 }
 
-void drawCard(card_t toDraw, unsigned int x, unsigned char y)
+void drawCard(card_t toDraw, unsigned int x, unsigned char y, bool useCutoff)
 {
 	if (!(toDraw & CARD_EXISTS)) return;
 
@@ -119,8 +119,11 @@ void drawCard(card_t toDraw, unsigned int x, unsigned char y)
 	drawMask(numerals_tiles_data[cardNumber], 5, x + CARD_NUMERAL_HOFFSET, y + CARD_NUMERAL_VOFFSET);
 	drawMask(small_suits_tiles_data[cardSuit], 4, x + CARD_FSUIT_HOFFSET, y + CARD_FSUIT_VOFFSET);
 
-	drawMaskInverted(numerals_tiles_data[cardNumber], 5, x + CARD_WIDTH - CARD_NUMERAL_HOFFSET, y + CARD_HEIGHT - CARD_NUMERAL_VOFFSET);
-	drawMaskInverted(small_suits_tiles_data[cardSuit], 4, x + CARD_WIDTH - CARD_FSUIT_HOFFSET, y + CARD_HEIGHT - CARD_FSUIT_VOFFSET);
+	if (!useCutoff)
+	{
+		drawMaskInverted(numerals_tiles_data[cardNumber], 5, x + CARD_WIDTH - CARD_NUMERAL_HOFFSET, y + CARD_HEIGHT - CARD_NUMERAL_VOFFSET);
+		drawMaskInverted(small_suits_tiles_data[cardSuit], 4, x + CARD_WIDTH - CARD_FSUIT_HOFFSET, y + CARD_HEIGHT - CARD_FSUIT_VOFFSET);
+	}
 
 	if (cardNumber < 10)
 	{
@@ -137,6 +140,9 @@ void drawCard(card_t toDraw, unsigned int x, unsigned char y)
 			drawMask(pipMask, 6, x + 7, y + 12);
 			drawMask(pipMask, 6, x + 15, y + 12);
 		}
+
+		if (useCutoff) return; // every lower pip is obscured by the card on top of this one
+
 		if (pipMap & 0x40)
 		{
 			drawMask(pipMask, 6, x + 7, y + 7);
@@ -196,7 +202,7 @@ void drawStack(unsigned char stackIndex)
 		unsigned char cardX = TABL_HPOS + stackIndex * (CARD_WIDTH + CARD_SPACING);
 		unsigned char cardY = TABL_VPOS + j * CARD_VOFFSET;
 		
-		drawCard(tableau[stackIndex][j], cardX, cardY);
+		drawCard(tableau[stackIndex][j], cardX, cardY, tableau[stackIndex][j + 1] & CARD_EXISTS);
 	}
 }
 
@@ -223,9 +229,9 @@ void drawFrame(bool drawSelected)
 {
 	gfx_FillScreen(BKGND_COLOR);
 
-	for (unsigned char i = 0; i < NUM_FREECELLS; i++) drawCard(freeCells[i], FC_HPOS + i * (CARD_WIDTH + CARD_SPACING), FC_VPOS);
+	for (unsigned char i = 0; i < NUM_FREECELLS; i++) drawCard(freeCells[i], FC_HPOS + i * (CARD_WIDTH + CARD_SPACING), FC_VPOS, false);
 	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++) drawStack(i);
-	if (drawSelected && (selectedCard & CARD_EXISTS) && cursorMode == DROP) drawCard(selectedCard, SELCARD_XPOS, SELCARD_YPOS);
+	if (drawSelected && (selectedCard & CARD_EXISTS) && cursorMode == DROP) drawCard(selectedCard, SELCARD_XPOS, SELCARD_YPOS, false);
 
 	drawDeck();
 	drawBar();
@@ -279,7 +285,7 @@ void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned ch
 		}
 		else
 		{
-			drawCard(selectedCard, cardX, cardY);
+			drawCard(selectedCard, cardX, cardY, false);
 		}
 		gfx_BlitBuffer();
 		gfx_Sprite(spriteBuffer, cardX, cardY);
