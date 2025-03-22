@@ -255,16 +255,19 @@ void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned ch
 	drawFrame(false);
 	gfx_TempSprite(spriteBuffer, CARD_WIDTH, CARD_HEIGHT);
 
+	const unsigned char Dy = y1 - y0;
+	const clock_t duration = MOVE_ANIM_LENGTH * Dy;
+
 	const clock_t startTime = clock();
 
 	while (true)
 	{
 		const clock_t nowTime = clock();
-		if (nowTime - startTime > MOVE_ANIM_LENGTH) break;
+		if (nowTime - startTime > duration) break;
 		const clock_t elapsed = nowTime - startTime;
 
-		const unsigned int dx = (x1 - x0) * elapsed / MOVE_ANIM_LENGTH;
-		const unsigned char dy = (y1 - y0) * elapsed / MOVE_ANIM_LENGTH;
+		const unsigned int dx = (x1 - x0) * elapsed / duration;
+		const unsigned char dy = Dy * elapsed / duration;
 
 		const unsigned int cardX = flipX ? x1 - dx : x0 + dx;
 		const unsigned char cardY =  flipY ? y1 - dy : y0 + dy;

@@ -57,7 +57,7 @@
 #define SELCARD_XPOS 147
 #define SELCARD_YPOS 210
 
-#define MOVE_ANIM_LENGTH 8000
+#define MOVE_ANIM_LENGTH 40
 
 extern gfx_sprite_t* cardSprite[11];
 
