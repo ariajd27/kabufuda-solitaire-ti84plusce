@@ -79,21 +79,22 @@ void drawMaskInverted(const unsigned char *data, unsigned char rows, unsigned in
 	}
 }
 
+unsigned int getCursorX()
+{
+	if (cursorStack < NUM_FREECELLS) return FC_HPOS + cursorStack * (CARD_WIDTH + CARD_SPACING);
+	else return TABL_HPOS + (cursorStack - NUM_FREECELLS) * (CARD_WIDTH + CARD_SPACING);
+}
+
+unsigned char getCursorY()
+{
+	if (cursorStack < NUM_FREECELLS) return FC_VPOS;
+	else return TABL_VPOS + cursorIndex * CARD_VOFFSET;
+}
+
 void drawCursor()
 {
-	unsigned int X;
-	unsigned char Y;
-
-	if (cursorStack < NUM_FREECELLS)
-	{
-		X = FC_HPOS + cursorStack * (CARD_WIDTH + CARD_SPACING);
-		Y = FC_VPOS;
-	}
-	else
-	{
-		X = TABL_HPOS + (cursorStack - NUM_FREECELLS) * (CARD_WIDTH + CARD_SPACING);
-		Y = TABL_VPOS + cursorIndex * CARD_VOFFSET;
-	}
+	const unsigned int X = getCursorX();
+	const unsigned char Y = getCursorY();
 
 	gfx_SetColor(cursorMode == SELECT ? BLACK_COLOR : RED_COLOR);
 
@@ -208,8 +209,6 @@ void drawBar()
 
 	if (progress < PROGRESS_COMPLETE)
 	{
-		if ((selectedCard & CARD_EXISTS) && cursorMode == DROP) drawCard(selectedCard, SELCARD_XPOS, SELCARD_YPOS);
-
 		if (cursorMode == SELECT) gfx_PrintStringXY("SELECT", GFX_LCD_WIDTH / 2 - 3 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
 		else gfx_PrintStringXY("DROP", GFX_LCD_WIDTH / 2 - 2 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
 	}
@@ -220,16 +219,59 @@ void drawBar()
 	gfx_PrintUInt(numWins, 3);
 }
 
-void drawFrame()
+void drawFrame(bool drawSelected)
 {
 	gfx_FillScreen(BKGND_COLOR);
 
 	for (unsigned char i = 0; i < NUM_FREECELLS; i++) drawCard(freeCells[i], FC_HPOS + i * (CARD_WIDTH + CARD_SPACING), FC_VPOS);
 	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++) drawStack(i);
+	if (drawSelected && (selectedCard & CARD_EXISTS) && cursorMode == DROP) drawCard(selectedCard, SELCARD_XPOS, SELCARD_YPOS);
 
 	drawDeck();
 	drawBar();
 	drawCursor();
 	
 	gfx_BlitBuffer();
+}
+
+void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned char y1)
+{
+	const bool flipX = x0 > x1;
+	const bool flipY = y0 > y1;
+
+	if (flipX)
+	{
+		x0 ^= x1;
+		x1 ^= x0;
+		x0 ^= x1;
+	}
+	if (flipY)
+	{
+		y0 ^= y1;
+		y1 ^= y0;
+		y0 ^= y1;
+	}
+
+	drawFrame(false);
+	gfx_TempSprite(spriteBuffer, CARD_WIDTH, CARD_HEIGHT);
+
+	const clock_t startTime = clock();
+
+	while (true)
+	{
+		const clock_t nowTime = clock();
+		if (nowTime - startTime > MOVE_ANIM_LENGTH) break;
+		const clock_t elapsed = nowTime - startTime;
+
+		const unsigned int dx = (x1 - x0) * elapsed / MOVE_ANIM_LENGTH;
+		const unsigned char dy = (y1 - y0) * elapsed / MOVE_ANIM_LENGTH;
+
+		const unsigned int cardX = flipX ? x1 - dx : x0 + dx;
+		const unsigned char cardY =  flipY ? y1 - dy : y0 + dy;
+
+		gfx_GetSprite(spriteBuffer, cardX, cardY);
+		drawCard(selectedCard, cardX, cardY);
+		gfx_BlitBuffer();
+		gfx_Sprite(spriteBuffer, cardX, cardY);
+	}
 }

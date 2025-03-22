@@ -21,6 +21,7 @@
 
 #include "variables.h"
 #include "save.h"
+#include "drawing.h"
 
 unsigned char cursorStack;
 unsigned char cursorIndex;
@@ -58,7 +59,7 @@ bool canDropCard()
 	}
 	else if (orgStack != DECK_ORG)
 	{
-		return false;
+		return cursorStack == orgStack;
 	}
 	else if (cursorIndex == 0)
 	{
@@ -70,15 +71,15 @@ bool canDropCard()
 	}
 }
 
-card_t getNewCard()
+void getNewCard()
 {
 	while (true)
 	{
-		card_t card = (rand() & CARD_SUIT) | (rand() % 13) | CARD_EXISTS;
-		
-		if (removeFromDeck(card)) continue;
-		return card;
+		selectedCard = (rand() & CARD_SUIT) | (rand() % 13) | CARD_EXISTS;
+		if (!removeFromDeck(selectedCard)) break;
 	}
+
+	animateDraw();
 }
 
 bool removeFromDeck(card_t toRemove)
@@ -93,8 +94,21 @@ bool removeFromDeck(card_t toRemove)
 	return false;
 }
 
+void grabCard()
+{
+	orgStack = cursorStack;
+	orgIndex = cursorIndex;
+
+	selectedCard = tableau[cursorStack - NUM_FREECELLS][cursorIndex];
+	tableau[cursorStack - NUM_FREECELLS][cursorIndex] = CARD_EMPTY;
+
+	animateGrab();
+}
+
 void dropCard()
 {
+	animateDrop();
+
 	unsigned char const prevProgress = progress;
 
 	if (cursorStack < NUM_FREECELLS)

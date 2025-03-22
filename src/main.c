@@ -40,7 +40,7 @@ bool run()
 	{
 		clock_t frameTimer = clock();
 
-		drawFrame();
+		drawFrame(true);
 
 		while (clock() - frameTimer < FRAME_TIME);
 	}
@@ -50,7 +50,7 @@ bool run()
 		// this way we know not to try to resume
 		deleteSave();
 
-		drawFrame();
+		drawFrame(true);
 
 		while (kb_AnyKey());
 

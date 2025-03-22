@@ -57,12 +57,21 @@
 #define SELCARD_XPOS 147
 #define SELCARD_YPOS 210
 
+#define MOVE_ANIM_LENGTH 8000
+
 extern gfx_sprite_t* cardSprite[11];
 
+unsigned int getCursorX();
+unsigned char getCursorY();
 void drawCursor();
 void drawCard(card_t toDraw, unsigned int x, unsigned char y);
 void drawStack(unsigned char stackIndex);
 void drawBar();
-void drawFrame();
+void drawFrame(bool drawSelected);
+void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned char y1);
+
+#define animateGrab() animateMove(getCursorX(), getCursorY(), SELCARD_XPOS, SELCARD_YPOS)
+#define animateDrop() animateMove(SELCARD_XPOS, SELCARD_YPOS, getCursorX(), getCursorY())
+#define animateDraw() animateMove(DECK_HPOS, DECK_VPOS, SELCARD_XPOS, SELCARD_YPOS)
 
 #endif

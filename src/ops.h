@@ -25,8 +25,9 @@ void start();
 bool canGrabCard();
 bool canDropCard();
 
-card_t getNewCard();
+void getNewCard();
 bool removeFromDeck(card_t toRemove); // returns true iff card not in deck
+void grabCard();
 void dropCard();
 void maxCursorIndex();
 

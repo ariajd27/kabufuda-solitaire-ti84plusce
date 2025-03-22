@@ -45,12 +45,7 @@ bool doInput()
 	{
 		if (cursorMode == SELECT && canGrabCard())
 		{
-			orgStack = cursorStack - NUM_FREECELLS;
-			orgIndex = cursorIndex;
-
-			selectedCard = tableau[cursorStack - NUM_FREECELLS][cursorIndex];
-			tableau[cursorStack - NUM_FREECELLS][cursorIndex] = CARD_EMPTY;
-
+			grabCard();
 			cursorMode = DROP;
 		}
 		else if (canDropCard())
@@ -73,7 +68,7 @@ bool doInput()
 	{
 		if (cursorMode == SELECT && deckCards > 0)
 		{
-			selectedCard = getNewCard();
+			getNewCard();
 			orgStack = DECK_ORG;
 			cursorMode = DROP;
 		}
