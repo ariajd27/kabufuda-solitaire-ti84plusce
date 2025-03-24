@@ -34,6 +34,16 @@
 const unsigned char segments[] = {
 	0x01, 0x24, 0x25, 0x48, 0x49, 0x4a, 0xa8, 0x90, 0x91, 0xb4
 };
+const unsigned char pipCode[] = {
+	0x04, 07, 02, 15, 02, 07, 12, 15, 12,
+	0x02, 07, 07, 15, 07,
+	0x01, 11, 07,
+	0x84, 12, 29, 20, 29, 12, 39, 20, 39,
+	0x82, 12, 34, 20, 34,
+	0x81, 16, 34,
+	0x02, 07, 17, 15, 17,
+	0x01, 11, 17
+};
 
 void drawMask(const unsigned char *data, unsigned char rows, unsigned int x, unsigned char y)
 {
@@ -104,6 +114,8 @@ void drawCursor()
 	drawMaskInverted(selcorner_tile_0_data, 6, X + CARD_WIDTH + 2, Y + CARD_HEIGHT + 2);
 }
 
+#include <debug.h>
+
 void drawCard(card_t toDraw, unsigned int x, unsigned char y, bool useCutoff)
 {
 	if (!(toDraw & CARD_EXISTS)) return;
@@ -128,54 +140,28 @@ void drawCard(card_t toDraw, unsigned int x, unsigned char y, bool useCutoff)
 	if (cardNumber < 10)
 	{
 		// this is a number card (A-10) and should have pips
-		unsigned char pipMap = segments[cardNumber];
 		const unsigned char *pipMask = medium_suits_tiles_data[cardSuit];
+		unsigned char *codePtr = pipCode;
+		for (unsigned char pipMap = segments[cardNumber]; pipMap != 0x00; pipMap <<= 1)
+		{
+			unsigned char counter = *codePtr & 0x0f;
+			if (pipMap & 0x80)
+			{
+				const bool isNegative = *codePtr & 0x80;
+				codePtr++;
 
-		// the layout is complicated no matter what...
-		// i do plan to simplify it later though to atl not have the 100000 function calls
-		if (pipMap & 0x80)
-		{
-			drawMask(pipMask, 6, x + 7, y + 2);
-			drawMask(pipMask, 6, x + 15, y + 2);
-			drawMask(pipMask, 6, x + 7, y + 12);
-			drawMask(pipMask, 6, x + 15, y + 12);
-		}
+				while (counter-- > 0)
+				{
+					if (isNegative) drawMaskInverted(pipMask, 6, x + codePtr[0], y + codePtr[1]);
+					else drawMask(pipMask, 6, x + codePtr[0], y + codePtr[1]);
 
-		if (useCutoff) return; // every lower pip is obscured by the card on top of this one
-
-		if (pipMap & 0x40)
-		{
-			drawMask(pipMask, 6, x + 7, y + 7);
-			drawMask(pipMask, 6, x + 15, y + 7);
-		}
-		if (pipMap & 0x20)
-		{
-			drawMask(pipMask, 6, x + 11, y + 7);
-		}
-		if (pipMap & 0x10)
-		{
-			drawMaskInverted(pipMask, 6, x + 12, y + 29);
-			drawMaskInverted(pipMask, 6, x + 20, y + 29);
-			drawMaskInverted(pipMask, 6, x + 12, y + 39);
-			drawMaskInverted(pipMask, 6, x + 20, y + 39);
-		}
-		if (pipMap & 0x08)
-		{
-			drawMaskInverted(pipMask, 6, x + 12, y + 34);
-			drawMaskInverted(pipMask, 6, x + 20, y + 34);
-		}
-		if (pipMap & 0x04)
-		{
-			drawMaskInverted(pipMask, 6, x + 16, y + 34);
-		}
-		if (pipMap & 0x02)
-		{
-			drawMask(pipMask, 6, x + 7, y + 17);
-			drawMask(pipMask, 6, x + 15, y + 17);
-		}
-		if (pipMap & 0x01)
-		{
-			drawMask(pipMask, 6, x + 11, y + 17);
+					codePtr += 2;
+				}
+			}
+			else
+			{
+				codePtr += counter * 2 + 1;
+			}
 		}
 	}
 	else
