@@ -21,15 +21,6 @@
 #include "gfx/gfx.h"
 #include "variables.h"
 
-#define DEAL_ANIM_DECK_X ((GFX_LCD_WIDTH - CARD_WIDTH) / 2)
-#define DEAL_ANIM_DECK_Y (GFX_LCD_HEIGHT - CARD_HEIGHT * 2 / 3)
-#define DEAL_ANIM_DECK_FRAME_TIME 100
-#define DEAL_ANIM_DECK_PAUSE_TIME 1000
-#define DEAL_ANIM_TOTAL_TIME 100000
-#define DEAL_ANIM_TRAVEL_TIME 6000
-#define DEAL_ANIM_FRAME_TIME 250
-#define DEAL_ANIM_LAUNCH_INTERVAL ((DEAL_ANIM_TOTAL_TIME - DEAL_ANIM_TRAVEL_TIME) / 40)
-
 // these are used for placing pips on cards
 const unsigned char segments[] = {
 	0x01, 0x24, 0x25, 0x48, 0x49, 0x4a, 0xa8, 0x90, 0x91, 0xb4
