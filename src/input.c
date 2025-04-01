@@ -43,10 +43,13 @@ bool doInput()
 
 	if (select)
 	{
-		if (cursorMode == SELECT && canGrabCard())
+		if (cursorMode == SELECT)
 		{
-			grabCard();
-			cursorMode = DROP;
+			if (canGrabCard())
+			{
+				grabCard();
+				cursorMode = DROP;
+			}
 		}
 		else if (canDropCard())
 		{
