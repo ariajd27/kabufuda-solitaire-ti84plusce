@@ -279,6 +279,8 @@ void animateDeal()
 {
 	gfx_FillScreen(BKGND_COLOR);
 	drawDeck();
+	drawBar();
+	gfx_BlitBuffer();
 
 	for (unsigned char i = NUM_FREECELLS - 1; i < NUM_FREECELLS; i--)
 	{
