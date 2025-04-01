@@ -27,6 +27,31 @@
 unsigned char deck[7];
 unsigned char deckCards;
 
+void reset()
+{
+	progress = 0;
+	deckCards = 52;
+
+	for (unsigned char i = 0; i < 7; i++)
+	{
+		deck[i] = 0x00;
+	}
+
+	for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
+	{
+		for (unsigned char j = 0; j < TABL_STACK_SIZE; j++)
+		{
+			tableau[i][j] = CARD_EMPTY;
+		}
+	}
+
+	for (unsigned char i = 0; i < NUM_FREECELLS; i++)
+	{
+		freeCells[i] = CARD_EXISTS | i | (unsigned char)(rand() & CARD_SUIT);
+		removeFromDeck(freeCells[i]);
+	}
+}
+
 void load()
 {
 	unsigned char saveHandle = ti_Open(SAVE_VAR_NAME, "r");
@@ -34,27 +59,7 @@ void load()
 	if (saveHandle == 0)
 	{
 		// no save present
-		progress = 0;
-		deckCards = 52;
-
-		for (unsigned char i = 0; i < 7; i++)
-		{
-			deck[i] = 0x00;
-		}
-
-		for (unsigned char i = 0; i < NUM_TABLSLOTS; i++)
-		{
-			for (unsigned char j = 0; j < TABL_STACK_SIZE; j++)
-			{
-				tableau[i][j] = CARD_EMPTY;
-			}
-		}
-
-		for (unsigned char i = 0; i < NUM_FREECELLS; i++)
-		{
-			freeCells[i] = CARD_EXISTS | i | (unsigned char)(rand() & CARD_SUIT);
-			removeFromDeck(freeCells[i]);
-		}
+		reset();
 	}
 	else
 	{
@@ -71,6 +76,7 @@ void load()
 
 		ti_Read(&deckCards, 1, 1, saveHandle);
 		ti_Read(deck, 1, 7, saveHandle);
+		ti_Read(&selectedCard, 1, 1, saveHandle);
 	}
 
 	ti_Close(saveHandle);
@@ -84,6 +90,7 @@ void save()
 	ti_Write(tableau, 1, NUM_TABLSLOTS * TABL_STACK_SIZE, saveHandle);
 	ti_Write(&deckCards, 1, 1, saveHandle);
 	ti_Write(deck, 1, 7, saveHandle);
+	ti_Write(&selectedCard, 1, 1, saveHandle);
 
 	ti_Close(saveHandle);
 }
