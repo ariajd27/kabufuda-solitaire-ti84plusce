@@ -27,7 +27,7 @@
 unsigned char deck[7];
 unsigned char deckCards;
 
-void reset()
+void deal()
 {
 	progress = 0;
 	deckCards = 52;
@@ -59,7 +59,7 @@ void load()
 	if (saveHandle == 0)
 	{
 		// no save present
-		reset();
+		deal();
 	}
 	else
 	{
