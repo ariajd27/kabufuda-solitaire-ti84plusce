@@ -217,6 +217,42 @@ void drawFrame(bool drawSelected)
 	gfx_BlitBuffer();
 }
 
+void animateMoveInternal(bool flipX, bool flipY, unsigned int x0, unsigned char y0, unsigned int x1, unsigned char y1, bool faceDown)
+{
+	gfx_TempSprite(spriteBuffer, CARD_WIDTH, CARD_HEIGHT);
+
+	const unsigned int Dx = x1 - x0;
+	const unsigned char Dy = y1 - y0;
+	const clock_t duration = MOVE_ANIM_LENGTH * (Dy + Dx);
+
+	const clock_t startTime = clock();
+
+	while (true)
+	{
+		const clock_t nowTime = clock();
+		if (nowTime - startTime > duration) break;
+		const clock_t elapsed = nowTime - startTime;
+
+		const unsigned int dx = Dx * elapsed / duration;
+		const unsigned char dy = Dy * elapsed / duration;
+
+		const unsigned int cardX = flipX ? x1 - dx : x0 + dx;
+		const unsigned char cardY =  flipY ? y1 - dy : y0 + dy;
+
+		gfx_GetSprite(spriteBuffer, cardX, cardY);
+		if (faceDown)
+		{
+			gfx_Sprite(card_back, cardX, cardY);
+		}
+		else
+		{
+			drawCard(selectedCard, cardX, cardY, false);
+		}
+		gfx_BlitBuffer();
+		gfx_Sprite(spriteBuffer, cardX, cardY);
+	}
+}
+
 void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned char y1, bool faceDown)
 {
 	const bool flipX = x0 > x1;
@@ -236,35 +272,24 @@ void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned ch
 	}
 
 	drawFrame(false);
-	gfx_TempSprite(spriteBuffer, CARD_WIDTH, CARD_HEIGHT);
+	animateMoveInternal(flipX, flipY, x0, y0, x1, y1, faceDown);
+}
 
-	const unsigned char Dy = y1 - y0;
-	const clock_t duration = MOVE_ANIM_LENGTH * Dy;
+void animateDeal()
+{
+	gfx_FillScreen(BKGND_COLOR);
+	drawDeck();
 
-	const clock_t startTime = clock();
-
-	while (true)
+	for (unsigned char i = NUM_FREECELLS - 1; i < NUM_FREECELLS; i--)
 	{
-		const clock_t nowTime = clock();
-		if (nowTime - startTime > duration) break;
-		const clock_t elapsed = nowTime - startTime;
+		selectedCard = freeCells[i];
 
-		const unsigned int dx = (x1 - x0) * elapsed / duration;
-		const unsigned char dy = Dy * elapsed / duration;
+		const unsigned int targetX = FC_HPOS + i * (CARD_WIDTH + CARD_SPACING);
 
-		const unsigned int cardX = flipX ? x1 - dx : x0 + dx;
-		const unsigned char cardY =  flipY ? y1 - dy : y0 + dy;
-
-		gfx_GetSprite(spriteBuffer, cardX, cardY);
-		if (faceDown)
-		{
-			gfx_Sprite(card_back, cardX, cardY);
-		}
-		else
-		{
-			drawCard(selectedCard, cardX, cardY, false);
-		}
-		gfx_BlitBuffer();
-		gfx_Sprite(spriteBuffer, cardX, cardY);
+		animateMoveInternal(false, false, DECK_HPOS, DECK_VPOS, targetX, FC_VPOS, false);
+		drawCard(selectedCard, targetX, FC_VPOS, false);
 	}
+
+	selectedCard = CARD_EMPTY;
+	drawFrame(false);
 }

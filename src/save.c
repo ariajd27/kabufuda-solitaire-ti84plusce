@@ -50,6 +50,8 @@ void deal()
 		freeCells[i] = CARD_EXISTS | i | (unsigned char)(rand() & CARD_SUIT);
 		removeFromDeck(freeCells[i]);
 	}
+
+	animateDeal();
 }
 
 void load()

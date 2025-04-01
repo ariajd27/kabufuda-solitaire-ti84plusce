@@ -69,6 +69,7 @@ void drawStack(unsigned char stackIndex);
 void drawBar();
 void drawFrame(bool drawSelected);
 void animateMove(unsigned int x0, unsigned char y0, unsigned int x1, unsigned char y1, bool faceDown);
+void animateDeal();
 
 #define getOrgX() (TABL_HPOS + (orgStack - NUM_FREECELLS) * (CARD_WIDTH + CARD_SPACING))
 #define getOrgY() (TABL_VPOS + orgIndex * CARD_VOFFSET)
