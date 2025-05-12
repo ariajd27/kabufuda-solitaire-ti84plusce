@@ -24,8 +24,13 @@
 #include "drawing.h"
 #include "ops.h"
 
+#define MAGIC_NUMBER 0x02
+
 unsigned char deck[7];
 unsigned char deckCards;
+
+unsigned char *numWins;
+unsigned char *saveData;
 
 void deal()
 {
@@ -54,6 +59,35 @@ void deal()
 	animateDeal();
 }
 
+void loadWins()
+{
+	const unsigned char winsHandle = ti_Open(WINS_VAR_NAME, "w+");
+	
+	while (true)
+	{
+		unsigned char thisId = 0;
+	    const unsigned char success = ti_Read(&thisId, 1, 1, winsHandle);
+
+        if (!success)
+        {
+            // reached end without finding our numWins
+            ti_PutC(MAGIC_NUMBER, winsHandle);
+            ti_PutC(0, winsHandle);
+            numWins = ti_GetDataPtr(winsHandle) - 1;
+            break;
+        }
+
+		if (thisId == MAGIC_NUMBER)
+		{
+            numWins = ti_GetDataPtr(winsHandle);
+            break;
+		}
+        else ti_Seek(1, SEEK_CUR, winsHandle); // skip this numWins
+	}
+
+	ti_Close(winsHandle);
+}
+
 void load()
 {
 	unsigned char saveHandle = ti_Open(SAVE_VAR_NAME, "r");
@@ -65,20 +99,29 @@ void load()
 	}
 	else
 	{
-		// load save
-		ti_Read(freeCells, 1, NUM_FREECELLS, saveHandle);
-		ti_Read(tableau, 1, NUM_TABLSLOTS * TABL_STACK_SIZE, saveHandle);
-		
-		// how far along does that make us?
-		progress = 0;
-		for (unsigned char i = 0; i < NUM_FREECELLS; i++)
-		{
-			if ((freeCells[i] & CARD_NUMBER) == CARD_KING) progress++;
-		}
+        unsigned char magicNumber = ti_GetC(saveHandle);
+        if (magicNumber != MAGIC_NUMBER)
+        {
+            // this is from a different solitaire game
+            deal();
+        }
+        else
+        {
+            // load save
+            ti_Read(freeCells, 1, NUM_FREECELLS, saveHandle);
+            ti_Read(tableau, 1, NUM_TABLSLOTS * TABL_STACK_SIZE, saveHandle);
+            
+            // how far along does that make us?
+            progress = 0;
+            for (unsigned char i = 0; i < NUM_FREECELLS; i++)
+            {
+                if ((freeCells[i] & CARD_NUMBER) == CARD_KING) progress++;
+            }
 
-		ti_Read(&deckCards, 1, 1, saveHandle);
-		ti_Read(deck, 1, 7, saveHandle);
-		ti_Read(&selectedCard, 1, 1, saveHandle);
+            ti_Read(&deckCards, 1, 1, saveHandle);
+            ti_Read(deck, 1, 7, saveHandle);
+            ti_Read(&selectedCard, 1, 1, saveHandle);
+        }
 	}
 
 	ti_Close(saveHandle);
@@ -88,6 +131,7 @@ void save()
 {
 	unsigned char saveHandle = ti_Open(SAVE_VAR_NAME, "w");
 
+    ti_PutC(MAGIC_NUMBER, saveHandle);
 	ti_Write(freeCells, 1, NUM_FREECELLS, saveHandle);
 	ti_Write(tableau, 1, NUM_TABLSLOTS * TABL_STACK_SIZE, saveHandle);
 	ti_Write(&deckCards, 1, 1, saveHandle);
@@ -100,19 +144,4 @@ void save()
 void deleteSave()
 {
 	ti_Delete(SAVE_VAR_NAME);
-}
-
-void loadWins()
-{
-	numWins = 0;
-	unsigned char winsHandle = ti_Open(WINS_VAR_NAME, "r");
-	if (winsHandle != 0) ti_Read(&numWins, 1, 1, winsHandle);
-	ti_Close(winsHandle);
-}
-
-void saveWins()
-{
-	unsigned char const winsHandle = ti_Open(WINS_VAR_NAME, "w");
-	ti_Write(&numWins, 1, 1, winsHandle);
-	ti_Close(winsHandle);
 }

@@ -30,7 +30,6 @@
 card_t tableau[NUM_TABLSLOTS][TABL_STACK_SIZE];
 card_t freeCells[NUM_FREECELLS];
 unsigned char progress;
-unsigned char numWins;
 
 bool run()
 {
@@ -80,6 +79,8 @@ int main(void)
 
 	kb_EnableOnLatch();
 	kb_ClearOnLatch();
+	
+	loadWins();
 
 	while (run());
 

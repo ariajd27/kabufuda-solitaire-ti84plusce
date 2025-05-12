@@ -17,8 +17,8 @@
 #ifndef variables_include_file
 #define variables_include_file
 
-#define WINS_VAR_NAME "KBFDWINS"
-#define SAVE_VAR_NAME "KBFDSAVE"
+#define WINS_VAR_NAME "SLTRWINS"
+#define SAVE_VAR_NAME "SLTRSAVE"
 
 #define FRAME_TIME 3277
 #define HOLD_TIME 2
@@ -50,7 +50,7 @@ extern unsigned char orgStack;
 extern unsigned char orgIndex;
 
 extern unsigned char progress;
-extern unsigned char numWins;
+extern unsigned char *numWins;
 
 extern unsigned char deck[7];
 extern unsigned char deckCards;

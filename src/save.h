@@ -22,6 +22,5 @@ void load();
 void save();
 void deleteSave();
 void loadWins();
-void saveWins();
 
 #endif

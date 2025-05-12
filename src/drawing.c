@@ -199,7 +199,7 @@ void drawBar()
 	else gfx_PrintStringXY("COMPLETE", GFX_LCD_WIDTH / 2 - 4 * TEXT_CHAR_WIDTH, SELCARD_DISP_Y);
 
 	gfx_SetTextXY(NUMWINS_DISP_X, SELCARD_DISP_Y);
-	gfx_PrintUInt(numWins, 3);
+	gfx_PrintUInt(*numWins, 3);
 }
 
 void drawFrame(bool drawSelected)

@@ -121,7 +121,7 @@ void dropCard()
 		tableau[cursorStack - NUM_FREECELLS][cursorIndex] = selectedCard;
 	}
 
-	if (progress == PROGRESS_COMPLETE && prevProgress < PROGRESS_COMPLETE) numWins++;
+	if (progress == PROGRESS_COMPLETE && prevProgress < PROGRESS_COMPLETE) (*numWins)++;
 }
 
 void clearCard()
