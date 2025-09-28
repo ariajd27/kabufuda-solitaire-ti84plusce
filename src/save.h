@@ -17,6 +17,11 @@
 #ifndef save_include_file
 #define save_include_file
 
+typedef struct {
+    unsigned char gameId;
+    unsigned int score;
+} highscore_t;
+
 void deal();
 void load();
 void save();

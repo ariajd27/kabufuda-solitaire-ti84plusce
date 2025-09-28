@@ -8,7 +8,7 @@ extern "C" {
 #include "global_palette.h"
 #define sprites_palette_offset 0
 #include "card_back.h"
-#include "crown.h"
+#include "faces.h"
 #define numerals_palette_offset 0
 #include "numerals.h"
 #define small_suits_palette_offset 0

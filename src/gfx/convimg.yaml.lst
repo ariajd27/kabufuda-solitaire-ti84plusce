@@ -2,8 +2,8 @@ global_palette.h
 global_palette.c
 card_back.h
 card_back.c
-crown.h
-crown.c
+faces.h
+faces.c
 numerals.h
 numerals.c
 small_suits.h

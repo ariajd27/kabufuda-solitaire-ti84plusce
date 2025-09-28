@@ -111,14 +111,67 @@ void drawCard(card_t toDraw, unsigned int x, unsigned char y, bool useCutoff)
 {
 	if (!(toDraw & CARD_EXISTS)) return;
 
-	gfx_SetColor(CARD_COLOR);
-	gfx_FillRectangle(x, y, CARD_WIDTH, CARD_HEIGHT);
-
-	gfx_SetColor((toDraw & CARD_RED) ? RED_COLOR : BLACK_COLOR);
-
 	const unsigned char cardNumber = toDraw & CARD_NUMBER;
 	const unsigned char cardSuit = (toDraw & CARD_SUIT) >> 4;
 
+	gfx_SetColor(CARD_COLOR);
+	gfx_FillRectangle(x, y, CARD_WIDTH, CARD_HEIGHT);
+	
+    if (cardNumber >= 10)
+    {
+        // this is a face card
+        const unsigned char tileIndex = cardSuit * 3 + cardNumber - 10;
+        const gfx_sprite_t *faceSprite = faces_tiles[tileIndex];
+
+        gfx_TempSprite(bottomSprite, CARD_FACE_WIDTH, CARD_FACE_HEIGHT);
+        gfx_RotateSpriteHalf(faceSprite, bottomSprite);
+
+        gfx_Sprite(faceSprite, x + CARD_FACE_HOFFSET, y + CARD_FACE_VOFFSET);
+        gfx_Sprite(bottomSprite, x + CARD_FACE_HOFFSET, y + CARD_HEIGHT / 2);
+
+        gfx_SetColor(BLACK_COLOR);
+        gfx_VertLine(x + 3, y + 12, 26);
+        gfx_VertLine(x + 23, y + 3, 26);
+        gfx_HorizLine(x + 6, y + 3, 17);
+        gfx_HorizLine(x + 4, y + 37, 17);
+
+        if (toDraw & CARD_RED) gfx_SetColor(RED_COLOR);
+    }
+    else
+    {
+        // this is a number card (A-10) and should have pips
+        dbg_printf("drawing pips for card with value %u at (%u, %u)...\n", cardNumber, x, y);
+	    gfx_SetColor((toDraw & CARD_RED) ? RED_COLOR : BLACK_COLOR);
+        const unsigned char *pipMask = medium_suits_tiles_data[cardSuit];
+        dbg_printf("located pip mask at %p...\n", pipMask);
+        const unsigned char *codePtr = pipCode;
+        for (unsigned char pipMap = segments[cardNumber]; pipMap != 0x00; pipMap <<= 1)
+        {
+            dbg_printf("current pip map is %x...\n", pipMap);
+            unsigned char counter = *codePtr & 0x0f;
+            if (pipMap & 0x80)
+            {
+                dbg_printf("executing instruction at %p...\n", codePtr);
+                const bool isNegative = *codePtr & 0x80;
+                if (isNegative) dbg_printf("pip is inverted...\n");
+                codePtr++;
+
+                while (counter-- > 0)
+                {
+                    if (isNegative) drawMaskInverted(pipMask, 6, x + codePtr[0], y + codePtr[1]);
+                    else drawMask(pipMask, 6, x + codePtr[0], y + codePtr[1]);
+
+                    codePtr += 2;
+                }
+            }
+            else
+            {
+                codePtr += counter * 2 + 1;
+            }
+        }
+    }
+
+    // no matter what, we need numerals and suit icons
 	drawMask(numerals_tiles_data[cardNumber], 5, x + CARD_NUMERAL_HOFFSET, y + CARD_NUMERAL_VOFFSET);
 	drawMask(small_suits_tiles_data[cardSuit], 4, x + CARD_FSUIT_HOFFSET, y + CARD_FSUIT_VOFFSET);
 
@@ -126,38 +179,6 @@ void drawCard(card_t toDraw, unsigned int x, unsigned char y, bool useCutoff)
 	{
 		drawMaskInverted(numerals_tiles_data[cardNumber], 5, x + CARD_WIDTH - CARD_NUMERAL_HOFFSET, y + CARD_HEIGHT - CARD_NUMERAL_VOFFSET);
 		drawMaskInverted(small_suits_tiles_data[cardSuit], 4, x + CARD_WIDTH - CARD_FSUIT_HOFFSET, y + CARD_HEIGHT - CARD_FSUIT_VOFFSET);
-	}
-
-	if (cardNumber < 10)
-	{
-		// this is a number card (A-10) and should have pips
-		const unsigned char *pipMask = medium_suits_tiles_data[cardSuit];
-		unsigned char *codePtr = pipCode;
-		for (unsigned char pipMap = segments[cardNumber]; pipMap != 0x00; pipMap <<= 1)
-		{
-			unsigned char counter = *codePtr & 0x0f;
-			if (pipMap & 0x80)
-			{
-				const bool isNegative = *codePtr & 0x80;
-				codePtr++;
-
-				while (counter-- > 0)
-				{
-					if (isNegative) drawMaskInverted(pipMask, 6, x + codePtr[0], y + codePtr[1]);
-					else drawMask(pipMask, 6, x + codePtr[0], y + codePtr[1]);
-
-					codePtr += 2;
-				}
-			}
-			else
-			{
-				codePtr += counter * 2 + 1;
-			}
-		}
-	}
-	else
-	{
-		gfx_Sprite(crown, x + 7, y + 17);
 	}
 }
 

@@ -15,10 +15,13 @@ converts:
   - name: sprites
     style: palette
     palette: global_palette
-    transparent-color-index: 3
     images:
       - card_back.png
-      - crown.png
+    tilesets:
+      tile-width: 19
+      tile-height: 17
+      images:
+        - faces.png
   - name: numerals
     style: palette
     bpp: 1

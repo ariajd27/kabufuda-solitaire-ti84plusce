@@ -24,12 +24,10 @@
 #include "drawing.h"
 #include "ops.h"
 
-#define MAGIC_NUMBER 0x02
-
 unsigned char deck[7];
 unsigned char deckCards;
 
-unsigned char *numWins;
+unsigned int *numWins;
 unsigned char *saveData;
 
 void deal()
@@ -61,30 +59,37 @@ void deal()
 
 void loadWins()
 {
-	const unsigned char winsHandle = ti_Open(WINS_VAR_NAME, "w+");
-	
-	while (true)
-	{
-		unsigned char thisId = 0;
-	    const unsigned char success = ti_Read(&thisId, 1, 1, winsHandle);
+	unsigned char winsHandle = ti_Open(WINS_VAR_NAME, "r+");
 
-        if (!success)
+    if (winsHandle == 0)
+    {
+        // create a new blank file
+        winsHandle = ti_Open(WINS_VAR_NAME, "w");
+        ti_PutC(0, winsHandle);
+        ti_Seek(0, SEEK_SET, winsHandle);
+    }
+
+    // is there already an entry for this game?
+    unsigned char *length = ti_GetDataPtr(winsHandle);
+    highscore_t *entries = (highscore_t *)length + sizeof(char);
+    for (unsigned char i = 0; i < *length; i++)
+    {
+        if (entries[i].gameId == GAME_ID)
         {
-            // reached end without finding our numWins
-            ti_PutC(MAGIC_NUMBER, winsHandle);
-            ti_PutC(0, winsHandle);
-            numWins = ti_GetDataPtr(winsHandle) - 1;
-            break;
+            numWins = &(entries[i].score);
+            goto found_wins;
         }
+    }
 
-		if (thisId == MAGIC_NUMBER)
-		{
-            numWins = ti_GetDataPtr(winsHandle);
-            break;
-		}
-        else ti_Seek(1, SEEK_CUR, winsHandle); // skip this numWins
-	}
+    // add a new blank entry
+    (*length)++;
+    ti_Seek(sizeof(char) + *length * sizeof(highscore_t), SEEK_SET, winsHandle);
+    const highscore_t newHighScore = { GAME_ID, 0 };
+    highscore_t *entry = (highscore_t *)ti_GetDataPtr(winsHandle);
+    ti_Write(&newHighScore, sizeof(highscore_t), 1, winsHandle);
+    numWins = &(entry->score);
 
+found_wins:
 	ti_Close(winsHandle);
 }
 
@@ -100,7 +105,7 @@ void load()
 	else
 	{
         unsigned char magicNumber = ti_GetC(saveHandle);
-        if (magicNumber != MAGIC_NUMBER)
+        if (magicNumber != GAME_ID)
         {
             // this is from a different solitaire game
             deal();
@@ -131,7 +136,7 @@ void save()
 {
 	unsigned char saveHandle = ti_Open(SAVE_VAR_NAME, "w");
 
-    ti_PutC(MAGIC_NUMBER, saveHandle);
+    ti_PutC(GAME_ID, saveHandle);
 	ti_Write(freeCells, 1, NUM_FREECELLS, saveHandle);
 	ti_Write(tableau, 1, NUM_TABLSLOTS * TABL_STACK_SIZE, saveHandle);
 	ti_Write(&deckCards, 1, 1, saveHandle);

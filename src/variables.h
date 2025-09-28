@@ -19,6 +19,7 @@
 
 #define WINS_VAR_NAME "SLTRWINS"
 #define SAVE_VAR_NAME "SLTRSAVE"
+#define GAME_ID 0x02
 
 #define FRAME_TIME 3277
 #define HOLD_TIME 2
@@ -50,7 +51,7 @@ extern unsigned char orgStack;
 extern unsigned char orgIndex;
 
 extern unsigned char progress;
-extern unsigned char *numWins;
+extern unsigned int *numWins;
 
 extern unsigned char deck[7];
 extern unsigned char deckCards;
